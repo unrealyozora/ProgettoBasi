@@ -13,6 +13,7 @@
 \usepackage{booktabs}
 \usepackage{float}
 \usepackage{hyperref}
+\usepackage{array}
 \graphicspath{ {./images/} }
 \pagestyle{plain}
 \onehalfspacing % Interlinea 1.5
@@ -33,14 +34,14 @@
     {\large Anno Accademico 2024/2025\par}
 \end{titlepage}
 
-% ------------------ INDICE (se necessario) ------------------
-% \tableofcontents
-% \newpage
+------------------ INDICE (se necessario) ------------------
+\tableofcontents
+\newpage
 
 % ------------------ CONTENUTO ------------------
 
 \section{Abstract}
-Questo progetto sviluppa una base di dati per gestire delle serie tv, composte da stagioni ed episodi, e dai loro attori e registi. Inoltre, questa base di dati permette di gestire degli utenti e gli episodi che guardano, ai quali possono dare un voto.\newline L’obbiettivo principale è quello di gestire la struttura delle serie tv, gestire le relazioni di quest’ ultime con il cast e il regista che vi partecipa e infine registrare ciò che un utente guarda.\newline
+Questo progetto sviluppa una base di dati per gestire delle serie tv, composte da stagioni ed episodi, e dai loro attori e registi. Inoltre, questa base di dati permette di gestire degli utenti e gli episodi che guardano, ai quali possono dare un voto.\newline L'obbiettivo principale è quello di gestire la struttura delle serie tv, gestire le relazioni di quest’ ultime con il cast e il regista che vi partecipa e infine registrare ciò che un utente guarda.\newline
 La base di dati distingue le persone in utenti, registi e attori, ognuno con degli attributi e relazioni distinte.\newline
 Una serie si compone di almeno una stagione, che a sua volta è composta da almeno un episodio. Opzionalmente una Serie TV può anche contenere una Opening (ovvero una sigla iniziale).\newline
 Infine, il sistema tiene traccia delle piattaforme di streaming che mettono a disposizione una determinata serie tv, e degli utenti che sottoscrivono un abbonamento con uno o più di queste piattaforme. \newline
@@ -222,8 +223,15 @@ Il database si compone delle seguenti entità:
 \end{itemize}
 \subsection{Lista generalizzazioni}
 \textbf{Persona} è una generalizzazione totale di \textbf{UTENTE}, \textbf{ATTORE} e \textbf{REGISTA} 
+
 \subsection{Schema E-R}
-\includegraphics[scale=0.45]{schema-no-ristrutt}
+\textbf{In figura \ref{fig:no-ristrutt}} è riportato il diagramma E-R che riassume i requisiti discussi in precedenza.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.4]{schema-no-ristrutt.jpg}
+    \caption{a nice plot}
+    \label{fig:no-ristrutt}
+\end{figure}
 \section{Progettazione Logica}
 In questa sezione illustriamo la traduzione dello schema concettuale in schema logico, per rappresentare i dati nel modo piu' efficace possibile. 
 Andiamo quindi ad analizzare le ridondanze, per comprendere se sia preferibile eliminarle o mantenerle. 
@@ -255,22 +263,195 @@ Assumiamo i seguenti dati:
 \begin{itemize}
     \item Operazione 1
     \begin{center}
-    \begin{tabular}{|c c c c|} 
+    \begin{tabular}{|c|c|c|c|}
     \hline
-    Concetto & Costrutto & Accessi & Tipo \\ [0.5ex] 
-    \hline\hline
-    SerieTv & Entità  & 1 & S\\
+    \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\
     \hline
-    RecitaIn & Relazione & 1 & S\\
+    Serie TV & E & 1 & S\rlap{\hspace{2.5em}$\times\,5$} \\
+    RecitaIn & R & 1 & S\rlap{\hspace{2.5em}$\times\,5$} \\
+    Attore & E & 1 & L\rlap{\hspace{2.5em}$\times\,5$} \\
+    Attore & E & 1 & S\rlap{\hspace{2.5em}$\times\,5$} \\
     \hline
-    Attore & Entità & 1 & L\\
+    \end{tabular}
+    \item Operazione 2
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Conecetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\
+        \hline
+        Attore & E & 1 & L\rlap{\hspace{2.5em}$\times\,25$} \\
+        \hline
+        \end{tabular}
+    \end{center}
+    \end{center}
+    Assumiamo costo doppio per le operazioni in scrittura, il costo totale ottenuto è:
+    $((5\times 3)\times 2) + 5 + 25=60$
+\end{itemize}
+\textbf{Senza Ridondanza}
+\begin{itemize}
+    \item Operazione 1
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Conecetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\
+        \hline
+        Serie Tv & E & 1 & S\rlap{\hspace{2.5em}$\times\,5$} \\
+        \hline
+        RecitaIn & R & 1 & S\rlap{\hspace{2.5em}$\times\,5$} \\
+        \hline
+        \end{tabular}
+    \end{center}
+    \item Operazione 2\newline
+    Stimiamo circa 2.000 performance attoriali
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Conecetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\
+        \hline
+        Attore & E & 1 & L\rlap{\hspace{2.5em}$\times\,25$} \\
+        \hline
+        RecitaIn & R & 2.000 & L\rlap{\hspace{2.5em}$\times\,25$} \\
+        \hline
+        \end{tabular}
+    \end{center}
+\end{itemize}
+Assumiamo costo doppio per le operazioni in scrittura, il costo totale ottenuto è:
+    $((5\times 2)\times 2)+25+(2000\times 25)\times 2=100.045$\newline
+    Questo calcolo permette di stabilire che mantenere la ridondanza è preferibile,
+    in modo da ottimizzare gli accessi.
+\subsubsection{Ridondanza "NumeroUtenti"}
+L' attributo “Numero utenti” dell'entità Episodio (relativa al numero di utenti che hanno guardato l'episodio) può essere calcolato a partire dalla relazione “Visione”, 
+in quanto è il conteggio di tutti gli utenti che hanno guardato quell'episodio.
+L'attributo viene modificato ogni volta che un utente guarda un episodio e viene visualizzato 50 volte al giorno per controllare l'andamento della piattaforma.
+Il tutto si riassume nelle seguenti operazioni:
+\begin{itemize}
+    \item \textbf{Operazione 1 (10.000 al giorno)}: inserimento di una nuova tupla in Visiona
+    \item \textbf{Operazione 2 (50 al giorno)}: Visualizzare il numero di utenti che hanno guardato un episodio.
+\end{itemize}
+Assumiamo i seguenti dati:
+\begin{center}
+\begin{tabular}{|c c c|} 
+ \hline
+ Concetto & Costrutto & Volume \\ [0.5ex] 
+ \hline\hline
+ Episodio & Entità  & 10.000\\ 
+ \hline
+ Visiona & Relazione & 1.000.000\\[1ex] 
+ \hline
+\end{tabular}
+\end{center}
+\textbf{Con ridondanza}
+\begin{itemize}
+    \item Operazione 1
+    \begin{center}
+    \begin{tabular}{|c|c|c|c|}
     \hline
-    Attore & Entità & 1 & S\\[1ex]
+    \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\
+    \hline
+    Visione & R & 1 & S\rlap{\hspace{2.5em}$\times\,10.000$} \\
+    Episodio & E & 1 & L\rlap{\hspace{2.5em}$\times\,10.000$} \\
+    Episodio & E & 1 & S\rlap{\hspace{2.5em}$\times\,10.000$} \\
     \hline
     \end{tabular}
     \end{center}
+    \item Operazione 2
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Conecetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\
+        \hline
+        Utenti & E & 1 & L\rlap{\hspace{2.5em}$\times\,25$} \\
+        \hline
+        \end{tabular}
+    \end{center}
 \end{itemize}
-
+\textbf{Senza ridondanza}
+\begin{itemize}
+    \item Operazione 1
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Conecetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\
+        \hline
+        Visione & R & 1 & S\rlap{\hspace{2.5em}$\times\,10.000$} \\
+        \hline
+        \end{tabular}
+    \end{center}
+    Assumiamo costo doppio per le operazioni in scrittura, il costo totale ottenuto è:
+    $(10.000\times2)\times2+10.000+50=50.050$
+    \item Operazione 2
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{Conecetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\
+        \hline
+        Episodio & E & 1 & L\rlap{\hspace{2.5em}$\times\,200$} \\
+        \hline
+        RecitaIn & R & 1.000.000 & L\rlap{\hspace{2.5em}$\times\,200$} \\
+        \hline
+        \end{tabular}
+    \end{center}
+    Assumiamo costo doppio per le operazioni in scrittura, il costo totale ottenuto è:
+    $(10.000\times2)+200+(200\times2)=20.600$
+\end{itemize}
+    In questo caso invece è preferibile eliminare la ridondanza.
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.4]{schema-ristrutt.jpg}
+    \caption{Schema E-R ristrutturato}
+    \label{fig:ristrutt}
+\end{figure}
 % Aggiungi altre sezioni qui...
+\subsection{Eliminazione delle generalizzazioni}
+\textbf {Persona} è una generalizzazione totale di \textbf{UTENTE}, \textbf{ATTORE} e \textbf{REGISTA}, presenta
+tre attributi \textit{Nome} , \textit{Data di nascita} e \textit{Identificatore}, ma non è legata a nessuna relazione.
+Si nota quindi come questa generalizzazione possa essere eliminata. È preferibile infatti
+accorpare i sue attributi nelle entità figlie. In questo modo si riduce il numero di attributi NULL rispetto all'operazione inversa,
+ovvero accorpare gli attributi delle entità figlie in una sola entità padre.\newline
+\textbf{In figura \ref{fig:ristrutt}} è riportato il diagramma E-R ristrutturato, in cui sono state effettuate le modifiche discusse precedentemente.
 
+\subsection{Schema relazionale}
+In seguito è riportato lo schema logico costruito a partire dallo schema E-R ristrutturato.
+L'asterisco indica gli attrributi che possono essere NULL.
+\begin{itemize}
+    \item \textbf{Serie}(\underline{Titolo, AnnoInizio}, Genere, Descrizione, Regista, PiattaformaStreaming, Opening)
+    \begin{itemize}
+        \item Serie.Regista=Regista.ID
+        \item Serie.PiattaformaStreaming=PiattaformaStreaming.Nome
+    \end{itemize}
+    \item \textbf{Stagione}(\underline{TitoloSerie, AnnoSerie}, \underline{Numero}, Anno)
+    \begin{itemize}
+        \item Stagione.TitoloSerie=Serie.Titolo
+        \item Stagione.AnnoSerie=Serie.AnnoInizio
+    \end{itemize}
+    \item \textbf{Episodio}(\underline{TitoloSerie, AnnoSerie}, \underline{NumeroStagione}, \underline  {Numero}, Durata, Titolo, NumeroUtenti)
+    \begin{itemize}
+        \item Episodio.TitoloSerie=Stagione.TitoloSerie
+        \item Episodio.AnnoSerie=Stagione.AnnoSerie
+        \item Episodio.NumeroStagione=Stagione.Numero
+    \end{itemize}
+    \item \textbf{Opening}(\underline{TitoloSerie, AnnoSerie}, Titolo, Compositore, Durata)
+    \item \textbf{Visualizzazione}(\underline{Username, TitoloSerie, AnnoSerie, NumeroStagione, NumeroEpisodio}, Data, Voto*) 
+    \begin{itemize}
+        \item Visualizzazione.Username=Utente.Username
+        \item Visualizzazione.TitoloSerie=Episodio.TitoloSerie
+        \item Visualizzazione.AnnoSerie=Episodio.AnnoSerie
+        \item Visualizzazione.NumeroStagione=Episodio.NumeroStagione
+        \item Visualizzazione.NumeroEpisodio=Episodio.Numero
+    \end{itemize}
+    \item \textbf{Utente}(\underline{Username}, Nome, DataNascita, Email)
+    \item \textbf{Attore}(\underline{ID}, Nome, DataNascita, Nazionalita, NumeroSerie)
+    \item \textbf{Regista}(\underline{ID}, Nome, DataNascita, Nazionalita, GenereSerie)
+    \item \textbf{Sottoscrizione}(\underline{Username}, \underline{Piattaforma}, DataInizio, DataFine*, TipoAbbonamento)
+    \begin{itemize}
+        \item Sottoscrizione.Username=Utente.Username
+        \item Sottoscrizione.Piattaforma=PiattaformaStreaming.Nome
+    \end{itemize}
+    \item \textbf{Performance}(\underline{IDAttore, Serie, AnnoSerie}, Ruolo, Compenso)
+    \begin{itemize}
+        \item Performance.Attore=Attore.ID
+        \item Perfomance.Serie=Serie.Titolo
+        \item Performance.AnnoSerie=Serie.AnnoInizio
+    \end{itemize}
+\end{itemize}
 \end{document}
