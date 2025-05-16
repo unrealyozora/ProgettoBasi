@@ -419,16 +419,16 @@ L'asterisco indica gli attrributi che possono essere NULL.
         \item Serie.Regista=Regista.ID
         \item Serie.PiattaformaStreaming=PiattaformaStreaming.Nome
     \end{itemize}
-    \item \textbf{Stagione}(\underline{TitoloSerie, AnnoSerie}, \underline{Numero}, Anno)
+    \item \textbf{Stagione}(\underline{TitoloSerie, AnnoSerie, NumeroStagione}, Anno)
     \begin{itemize}
         \item Stagione.TitoloSerie=Serie.Titolo
         \item Stagione.AnnoSerie=Serie.AnnoInizio
     \end{itemize}
-    \item \textbf{Episodio}(\underline{TitoloSerie, AnnoSerie}, \underline{NumeroStagione}, \underline  {Numero}, Durata, Titolo, NumeroUtenti)
+    \item \textbf{Episodio}(\underline{TitoloSerie, AnnoSerie, NumeroStagione, NumeroEpisodio}, Durata, Titolo, NumeroUtenti)
     \begin{itemize}
         \item Episodio.TitoloSerie=Stagione.TitoloSerie
         \item Episodio.AnnoSerie=Stagione.AnnoSerie
-        \item Episodio.NumeroStagione=Stagione.Numero
+        \item Episodio.NumeroStagione=Stagione.NumeroStagione
     \end{itemize}
     \item \textbf{Opening}(\underline{TitoloSerie, AnnoSerie}, Titolo, Compositore, Durata)
     \item \textbf{Visualizzazione}(\underline{Username, TitoloSerie, AnnoSerie, NumeroStagione, NumeroEpisodio}, Data, Voto*) 
@@ -442,15 +442,16 @@ L'asterisco indica gli attrributi che possono essere NULL.
     \item \textbf{Utente}(\underline{Username}, Nome, DataNascita, Email)
     \item \textbf{Attore}(\underline{ID}, Nome, DataNascita, Nazionalita, NumeroSerie)
     \item \textbf{Regista}(\underline{ID}, Nome, DataNascita, Nazionalita, GenereSerie)
-    \item \textbf{Sottoscrizione}(\underline{Username}, \underline{Piattaforma}, DataInizio, DataFine*, TipoAbbonamento)
+    \item \textbf{PiattaformaStreaming}(\underline{Nome}, CostoMensile)
+    \item \textbf{Sottoscrizione}(\underline{Username, Piattaforma}, DataInizio, DataFine*, TipoAbbonamento)
     \begin{itemize}
         \item Sottoscrizione.Username=Utente.Username
         \item Sottoscrizione.Piattaforma=PiattaformaStreaming.Nome
     \end{itemize}
-    \item \textbf{Performance}(\underline{IDAttore, Serie, AnnoSerie}, Ruolo, Compenso)
+    \item \textbf{Performance}(\underline{IDAttore, TitoloSerie, AnnoSerie}, Ruolo, Compenso)
     \begin{itemize}
         \item Performance.Attore=Attore.ID
-        \item Perfomance.Serie=Serie.Titolo
+        \item Perfomance.TitoloSerie=Serie.Titolo
         \item Performance.AnnoSerie=Serie.AnnoInizio
     \end{itemize}
 \end{itemize}
