@@ -455,4 +455,65 @@ L'asterisco indica gli attrributi che possono essere NULL.
         \item Performance.AnnoSerie=Serie.AnnoInizio
     \end{itemize}
 \end{itemize}
+
+
+\section{Implementazione in PostgreSQL e Definizione delle Query}
+
+\subsection*{Definizione delle Query}
+
+Di seguito vengono presentate e descritte le query con i relativi output generati e 
+viene motivato l’utilizzo dell’indice proposto.
+
+\vspace{1cm}
+
+\subsubsection*{Query 1}
+\textbf{Obiettivo:} Trovare tutti i titoli delle serie TV disponibili su una piattaforma specifica, ad esempio \textit{Netflix}.
+
+\vspace{0.5cm}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{Query1.jpg}
+\end{center}
+
+\vspace{1cm}
+
+\subsubsection*{Query }
+\textbf{Obiettivo:} Calcolare la media dei voti per ogni episodio della serie \textit{Dark}.
+
+\vspace{0.5cm}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{Query2.jpg}
+\end{center}
+
+\vspace{1cm}
+
+\subsubsection*{Query 3}
+\textbf{Obiettivo:} Elencare gli utenti che hanno guardato almeno 5 episodi in totale.
+
+\vspace{0.5cm}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{Query3.jpg}
+\end{center}
+
+\vspace{1cm}
+
+\subsubsection*{Query 4}
+\textbf{Obiettivo:} Trovare gli attori che hanno recitato in almeno una serie vista dall’utente \texttt{mario\_rossi}.
+
+\vspace{0.5cm}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{Query4.jpg}
+\end{center}
+
+\vspace{1cm}
+
+\subsubsection*{Query 5}
+\textbf{Obiettivo:} Trovare le prime 3 serie TV (per numero totale di visualizzazioni) dirette da registi italiani e disponibili su piattaforme con costo mensile superiore a 10 euro.
+
+\vspace{0.5cm}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{Query5.jpg}
+\end{center}
+
+\vspace{1cm}
+
 \end{document}
