@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS UTENTE;
 CREATE TABLE PIATTAFORMA_STREAMING(
     nome VARCHAR (100) PRIMARY KEY,
     costo_mensile float NOT NULL
+    CHECK (costo_mensile > 0)
 );
 
 CREATE TABLE UTENTE(
@@ -25,19 +26,23 @@ CREATE TABLE UTENTE(
 );
 
 CREATE TABLE ATTORE(
-    id INT PRIMARY KEY,
+    cod_fiscale INT PRIMARY KEY,
     nome VARCHAR (100) NOT NULL,
     data_nascita DATE NOT NULL,
     nazionalita VARCHAR (100) NOT NULL,
     numero_serie int NOT NULL
+    CHECK (numero_serie >= 0),
+    CHECK (cod_fiscale > 0)
 );
 
 CREATE TABLE REGISTA(
-    id INT PRIMARY KEY,
+    cod_fiscale INT PRIMARY KEY,
     nome VARCHAR (100) NOT NULL,
     data_nascita DATE NOT NULL,
     nazionalita VARCHAR (100) NOT NULL,
     genere_serie varchar (100) NOT NULL
+    CHECK (cod_fiscale > 0)
+
 );
 
 CREATE TABLE SERIE_TV (
@@ -47,10 +52,10 @@ CREATE TABLE SERIE_TV (
 	descrizione TEXT NOT NULL,
 	regista INT NOT NULL,
 	piattaforma_streaming VARCHAR (100) NOT NULL,
-	opening varchar (100),
 	PRIMARY KEY (titolo, anno_inizio),
-	FOREIGN KEY (regista) REFERENCES REGISTA(id) ON DELETE RESTRICT,
-	FOREIGN KEY (piattaforma_streaming) REFERENCES PIATTAFORMA_STREAMING(nome) ON DELETE RESTRICT
+	FOREIGN KEY (regista) REFERENCES REGISTA(cod_fiscale) ON DELETE RESTRICT ON UPDATE CASCADE,
+	FOREIGN KEY (piattaforma_streaming) REFERENCES PIATTAFORMA_STREAMING(nome) ON DELETE RESTRICT ON UPDATE CASCADE
+    CHECK (anno_inizio > 1900),
 );
 
 CREATE TABLE STAGIONE(
@@ -59,7 +64,14 @@ CREATE TABLE STAGIONE(
 	numero_stagione int,
 	anno int NOT NULL,
 	PRIMARY KEY (titolo_serie, anno_serie, numero_stagione),
-	FOREIGN KEY (titolo_serie, anno_serie) REFERENCES SERIE_TV (titolo, anno_inizio) ON DELETE CASCADE
+	FOREIGN KEY (titolo_serie, anno_serie) REFERENCES SERIE_TV (titolo, anno_inizio) ON DELETE CASCADE ON UPDATE CASCADE
+    CHECK (anno > 1900),
+    CHECK (numero_stagione > 0),
+    CHECK (
+        (numero_stagione <> 1)
+        OR
+        (anno = anno_serie)
+    )
 );
 
 CREATE TABLE EPISODIO(
@@ -72,7 +84,10 @@ CREATE TABLE EPISODIO(
     durata INT NOT NULL,
     numero_utenti INT NOT NULL,
     PRIMARY KEY (titolo_serie, anno_serie, numero_stagione, numero_episodio),
-    FOREIGN KEY (titolo_serie,anno_serie,numero_stagione) REFERENCES STAGIONE (titolo_serie, anno_serie, numero_stagione) ON DELETE CASCADE
+    FOREIGN KEY (titolo_serie,anno_serie,numero_stagione) REFERENCES STAGIONE (titolo_serie, anno_serie, numero_stagione) ON DELETE CASCADE ON UPDATE CASCADE,
+    CHECK (anno > 1900),
+    CHECK (numero_episodio > 0),
+    CHECK (durata > 0),
 );
 
 CREATE TABLE OPENING(
@@ -81,7 +96,8 @@ CREATE TABLE OPENING(
     anno_serie INT NOT NULL,
     compositore VARCHAR (100) NOT NULL,
     durata INT NOT NULL,
-    FOREIGN KEY (titolo_serie, anno_serie) REFERENCES SERIE_TV (titolo, anno_inizio) ON DELETE CASCADE
+    FOREIGN KEY (titolo_serie, anno_serie) REFERENCES SERIE_TV (titolo, anno_inizio) ON DELETE CASCADE ON UPDATE CASCADE,
+    CHECK (durata > 0),
 );
 
 CREATE TABLE VISUALIZZAZIONE(
@@ -93,13 +109,10 @@ CREATE TABLE VISUALIZZAZIONE(
     data DATE NOT NULL,
     voto INT,
 	PRIMARY KEY (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data),
-    FOREIGN KEY (username) REFERENCES UTENTE (username) ON DELETE CASCADE,
-    FOREIGN KEY (titolo_serie, anno_serie, numero_stagione, numero_episodio) REFERENCES EPISODIO (titolo_serie, anno_serie, numero_stagione, numero_episodio) ON DELETE CASCADE
+    FOREIGN KEY (username) REFERENCES UTENTE (username) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (titolo_serie, anno_serie, numero_stagione, numero_episodio) REFERENCES EPISODIO (titolo_serie, anno_serie, numero_stagione, numero_episodio) ON DELETE CASCADE ON UPDATE CASCADE,
+    CHECK (voto >= 0 AND voto <= 10),
 );
-
-
-
-
 
 CREATE TABLE PERFORMANCE (
     id_attore INT,
@@ -108,8 +121,9 @@ CREATE TABLE PERFORMANCE (
     ruolo VARCHAR (100) NOT NULL,
     compenso float NOT NULL,
     PRIMARY KEY (id_attore, titolo_serie, anno_serie),
-    FOREIGN KEY (id_attore) REFERENCES ATTORE(id) ON DELETE CASCADE,
-    FOREIGN KEY (titolo_serie, anno_serie) REFERENCES SERIE_TV(titolo, anno_inizio) ON DELETE CASCADe
+    FOREIGN KEY (id_attore) REFERENCES ATTORE(cod_fiscale) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (titolo_serie, anno_serie) REFERENCES SERIE_TV(titolo, anno_inizio) ON DELETE CASCADE ON UPDATE CASCADE,
+    CHECK (compenso > 0),
 );
 
 
@@ -121,8 +135,10 @@ CREATE TABLE SOTTOSCRIZIONE(
     data_fine DATE,
     tipo_abbonamento VARCHAR (100) NOT NULL,
     PRIMARY KEY (username, nome_piattaforma),
-    FOREIGN KEY (username) REFERENCES UTENTE(username) ON DELETE CASCADE,
-    FOREIGN KEY (nome_piattaforma) REFERENCES PIATTAFORMA_STREAMING(nome) ON DELETE CASCADE
+    FOREIGN KEY (username) REFERENCES UTENTE(username) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (nome_piattaforma) REFERENCES PIATTAFORMA_STREAMING(nome) ON DELETE CASCADE ON UPDATE CASCADE,
+    --Decidere il significato di tipo_abbonamento e check di cosneguenza CHECK ()
+
 );
 
 

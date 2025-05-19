@@ -28,14 +28,14 @@
     \vspace{1cm}
     {\scshape\Large Corso di Laurea in Informatica \par}
     \vspace{3cm}
-    {\Huge\bfseries Basi di Dati per un Sistema di gestione di Serie TV in Streaming \par}
+    {\Huge\bfseries Base di Dati per un Sistema di gestione di Serie TV in Streaming \par}
     \vspace{2cm}
     {\Large Gruppo: Ceron Tommaso, Parolin Dennis\par}
     \vfill
     {\large Anno Accademico 2024/2025\par}
 \end{titlepage}
 
------------------- INDICE (se necessario) ------------------
+------------------ INDICE  ------------------
 \tableofcontents
 \newpage
 
@@ -57,16 +57,14 @@ In questa sezione riassumiamo i requisiti che caratterizzano la base di dati.\ne
   \item Genere
 \end{itemize}
 Una Serie TV è composta da una o più stagioni, e da zero o una Opening (sigla iniziale) \newline\newline\newline\newline
-\textbf{Stagioni.} Una stagione è identificata da un identificatore univoco e contiene questi attributi:
+\textbf{Stagioni.} Una stagione è identificata dal suo numero e dalla Serie Tv a cui appartiene, e contiene questi attributi:
 \begin{itemize}
-    \item Identificatore
     \item Numero
     \item Anno
 \end{itemize}
 Una stagione è composta da uno o più episodi\newline\newline
-\textbf{Episodio.} Un episodio è identificato da un identificatore univoco e contiene questi attributi:
+\textbf{Episodio.} Un episodio è identificato dal suo numero e dalla stagione a cui appartiene, e contiene questi attributi:
 \begin{itemize}
-    \item Identificatore
     \item Numero
     \item Durata (in minuti)
     \item Titolo
@@ -78,9 +76,9 @@ Una stagione è composta da uno o più episodi\newline\newline
     \item Compositore
     \item Durata
 \end{itemize}
-\textbf{Persona.} Una persona generica è identificata da un identificatore univoco e contiene i seguenti attributi: 
+\textbf{Persona.} Una persona generica è identificata da un codice fiscale e contiene i seguenti attributi: 
 \begin{itemize}
-    \item Identificatore
+    \item Codice Fiscale
     \item Nome
     \item Data di nascita
 \end{itemize}
@@ -118,12 +116,12 @@ Il database si compone delle seguenti entità:
     \end{itemize}
     \item \textbf{Stagione:} Rappresenta una stagione di una specifica Serie Tv
     \begin{itemize}
-        \item \underline{Numero\_ stagione}: int
+        \item \underline{Numero\_stagione}: int
         \item Anno: int
     \end{itemize}
     \item \textbf{Episodio:} Rappresenta un singolo episodio di una specifica stagione
     \begin{itemize}
-        \item \underline{Numero\_ episodio}: int
+        \item \underline{Numero\_episodio}: int
         \item Durata (in minuti): int
         \item Titolo: string
         \item Numero\_utenti (che hanno guardato l'episodio): int
@@ -136,9 +134,9 @@ Il database si compone delle seguenti entità:
     \end{itemize}
     \item \textbf{Persona:} Rappresenta una persona generica.
     \begin{itemize}
-        \item \underline{Identificatore}: int
+        \item \underline{Codice Fiscale}: int
         \item Nome: string
-        \item Data\_ nascita: date
+        \item Data\_nascita: date
     \end{itemize}
     \item \textbf{Utente:} Rappresenta una specializzazione di Persona, rappresenta un abbonato a una o più piattaforme streaming
     \begin{itemize}
@@ -147,7 +145,7 @@ Il database si compone delle seguenti entità:
     \end{itemize}
     \item \textbf{Attore:} Rappresenta una specializzazione di Persona, partecipa a una o più serie TV.
     \begin{itemize}
-        \item Nazionalita': string
+        \item Nazionalità: string
         \item Numero\_serie (in cui ha partecipato): int
     \end{itemize}
     \item \textbf{Regista:} Rappresenta una specializzazione di Persona, ha diretto una o più serie TV.
@@ -163,22 +161,22 @@ Il database si compone delle seguenti entità:
 \end{itemize}
 \subsection{Lista relazioni}
 \begin{itemize}
-    \item Serie TV-> (1, N) ->ComposizioneStag<-(1,1) <-Stagione 
+    \item Serie TV$\Rightarrow$(1, N)$\Rightarrow$ComposizioneStag$\Leftarrow$(1,1)$\Leftarrow$Stagione 
     \begin{itemize}
         \item Una Serie Tv è composta da una o più stagioni
         \item Una stagione compone una sola Serie Tv 
     \end{itemize}
-    \item Stagione-> (1, N) ->ComposizioneEP<-(1,1) <-Episodio
+    \item Stagione$\Rightarrow$(1, N)$\Rightarrow$ComposizioneEP$\Leftarrow$(1,1)$\Leftarrow$Episodio
     \begin{itemize}
         \item Una stagione è composta da uno o più episodi
         \item Un episodio compone una sola stagione
     \end{itemize}
-    \item Serie TV-> (1,1) ->Contenimento<-(1, N) <-Piattaforma-Streaming
+    \item Serie TV$\Rightarrow$(1,1)$\Rightarrow$Contenimento$\Leftarrow$(1, N)$\Leftarrow$Piattaforma-Streaming
     \begin{itemize}
         \item Una Serie Tv è contenuta (può essere vista) in una sola piattaforma streaming
         \item Una piattaforma streaming può contenere una o più serie tv 
     \end{itemize}
-    \item Piattaforma-Streaming (1, N) ->Sottoscrizione<-(1, N) <-Utente
+    \item Piattaforma-Streaming$\Rightarrow$(1, N)$\Rightarrow$Sottoscrizione$\Leftarrow$(1, N)$\Leftarrow$Utente
     \begin{itemize}
         \item Ad una piattaforma streaming si sottoscrivono uno o più utenti
         \item Un utente può sottoscriversi a una o più piattaforme streaming (minimo una per essere considerato utente)
@@ -188,9 +186,9 @@ Il database si compone delle seguenti entità:
             \item Data\_fine: date
             \item Tpo\_abbonamento: string
         \end{itemize}
-    \end{itemize}
-    \item Utente-> (0, N) ->Visiona<-(0, N) <-Episodio
-    \item \begin{itemize}
+    \end{itemize}\newpage
+    \item Utente$\Rightarrow$(0, N)$\Rightarrow$Visiona$\Leftarrow$(0, N)$\Leftarrow$Episodio
+    \begin{itemize}
         \item Un utente può vedere 0 o più episodi di stagioni differenti
         \item Un episodio generico può essere visto da nessuno o da più utenti
         \item Questa relazione contiene i seguenti attributi:
@@ -198,25 +196,24 @@ Il database si compone delle seguenti entità:
             \item Data: date
             \item Voto: int
         \end{itemize}
-        Il voto e' opzionale.
+        Il voto è opzionale.
     \end{itemize}
+    \item Serie TV$\Rightarrow$(1, N)$\Rightarrow$Perfomance$\Leftarrow$(1, N)$\Leftarrow$Attore
     \begin{itemize}
-        \item Serie TV-> (1, N) ->RecitaIn<-(1, N) <-Attore
-        \begin{itemize}
             \item In una serie tv recitano uno o più attori
-            \item Un attore può recitare in una o più sere tv
+            \item Un attore può recitare in una o più serie tv
             \item Questa relazione contiene i seguenti attributi:
             \begin{itemize}
                 \item Ruolo: string
-            \end{itemize}
+                \item Compenso: int
         \end{itemize}
     \end{itemize}
-    \item Serie TV-> (1,1) ->Direzione<-(1, N)<-Regista 
+    \item Serie TV$\Rightarrow$(1,1)$\Rightarrow$Direzione$\Leftarrow$(1, N)$\Leftarrow$Regista 
     \begin{itemize}
         \item Una serie tv è diretta da un solo regista 
         \item Un regista può dirigere una o più serie 
     \end{itemize}
-    \item Serie Tv-> (0,1) ->ContenimentoOpening<-(1,1)<-Opening
+    \item Serie Tv$\Rightarrow$(0,1)$\Rightarrow$ContenimentoOpening$\Leftarrow$(1,1)$\Leftarrow$Opening
     \begin{itemize}
         \item Una serie tv contiene zero o una opening
         \item Una opening appartiene a una sola Serie Tv 
@@ -229,22 +226,22 @@ Il database si compone delle seguenti entità:
 \textbf{In figura \ref{fig:no-ristrutt}} è riportato il diagramma E-R che riassume i requisiti discussi in precedenza.
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.4]{schema-no-ristrutt.jpg}
-    \caption{a nice plot}
+    \includegraphics[scale=0.4]{schema-no-ristrutt.png}
+    \caption{Schema E-R non ristrutturato}
     \label{fig:no-ristrutt}
 \end{figure}
 \section{Progettazione Logica}
-In questa sezione illustriamo la traduzione dello schema concettuale in schema logico, per rappresentare i dati nel modo piu' efficace possibile. 
+In questa sezione illustriamo la traduzione dello schema concettuale in schema logico, per rappresentare i dati nel modo più efficace possibile. 
 Andiamo quindi ad analizzare le ridondanze, per comprendere se sia preferibile eliminarle o mantenerle. 
 Procediamo poi con l'eliminazione delle generalizzazioni e infine mostriamo lo schema ristrutturato.
 \subsection{Analisi delle ridondanze}
 \subsubsection{Ridondanza "NumeroSerieTv"}
-Possiamo notare che attributo “Numero Serie Tv” del sottoinsieme “Attore” entità “Persona” può essere calcolato dalla relazione RecitaIn, poiché è il conteggio di tutte le Serie Tv per quel determinato attore.
+Possiamo notare che attributo “Numero Serie Tv” del sottoinsieme “Attore” entità “Persona” può essere calcolato dalla relazione Perfomance, poiché è il conteggio di tutte le Serie Tv per quel determinato attore.
 Questo attributo viene modificato (almeno una volta) ogni volta che viene inserita una nuova SerieTv (stimiamo circa 5 nuovi inserimenti al giorno)
 e viene visualizzato ogni volta un utente vuole sapere in quanti film ha recitato un attore (stimiamo 25 al giorno).
 Il tutto si riassume nelle seguenti operazioni:
 \begin{itemize}
-    \item \textbf{Operazione 1 (5 al giorno)}: inserimento di una nuova tupla in RecitaIn
+    \item \textbf{Operazione 1 (5 al giorno)}: inserimento di una nuova tupla in Perfomance
     \item \textbf{Operazione 2 (25 al giorno)}: Visualizzare in quanti film ha recitato un attore.
 \end{itemize}
 
@@ -256,7 +253,7 @@ Assumiamo i seguenti dati:
  \hline\hline
  Attore & Entità  & 1000\\ 
  \hline
- RecitaIn & Relazione & 2000\\[1ex] 
+ Performance & Relazione & 2000\\[1ex] 
  \hline
 \end{tabular}
 \end{center}
@@ -269,7 +266,7 @@ Assumiamo i seguenti dati:
     \textbf{Concetto} & \textbf{Costrutto} & \textbf{Accessi} & \textbf{Tipo} \\
     \hline
     Serie TV & E & 1 & S\rlap{\hspace{2.5em}$\times\,5$} \\
-    RecitaIn & R & 1 & S\rlap{\hspace{2.5em}$\times\,5$} \\
+    Perfomance & R & 1 & S\rlap{\hspace{2.5em}$\times\,5$} \\
     Attore & E & 1 & L\rlap{\hspace{2.5em}$\times\,5$} \\
     Attore & E & 1 & S\rlap{\hspace{2.5em}$\times\,5$} \\
     \hline
@@ -298,7 +295,7 @@ Assumiamo i seguenti dati:
         \hline
         Serie Tv & E & 1 & S\rlap{\hspace{2.5em}$\times\,5$} \\
         \hline
-        RecitaIn & R & 1 & S\rlap{\hspace{2.5em}$\times\,5$} \\
+        Performance & R & 1 & S\rlap{\hspace{2.5em}$\times\,5$} \\
         \hline
         \end{tabular}
     \end{center}
@@ -311,7 +308,7 @@ Assumiamo i seguenti dati:
         \hline
         Attore & E & 1 & L\rlap{\hspace{2.5em}$\times\,25$} \\
         \hline
-        RecitaIn & R & 2.000 & L\rlap{\hspace{2.5em}$\times\,25$} \\
+        Performance & R & 2.000 & L\rlap{\hspace{2.5em}$\times\,25$} \\
         \hline
         \end{tabular}
     \end{center}
@@ -388,7 +385,7 @@ Assumiamo i seguenti dati:
         \hline
         Episodio & E & 1 & L\rlap{\hspace{2.5em}$\times\,200$} \\
         \hline
-        RecitaIn & R & 1.000.000 & L\rlap{\hspace{2.5em}$\times\,200$} \\
+        Perfomance & R & 1.000.000 & L\rlap{\hspace{2.5em}$\times\,200$} \\
         \hline
         \end{tabular}
     \end{center}
@@ -398,14 +395,14 @@ Assumiamo i seguenti dati:
     In questo caso invece è preferibile eliminare la ridondanza.
 \begin{figure}[h]
     \centering
-    \includegraphics[scale=0.4]{schema-ristrutt.jpg}
+    \includegraphics[scale=0.4]{schema-ristrutt.png}
     \caption{Schema E-R ristrutturato}
     \label{fig:ristrutt}
 \end{figure}
 % Aggiungi altre sezioni qui...
 \subsection{Eliminazione delle generalizzazioni}
 \textbf {Persona} è una generalizzazione totale di \textbf{UTENTE}, \textbf{ATTORE} e \textbf{REGISTA}, presenta
-tre attributi \textit{Nome} , \textit{Data di nascita} e \textit{Identificatore}, ma non è legata a nessuna relazione.
+tre attributi \textit{Nome}, \textit{Data di nascita} e \textit{Identificatore}, ma non è legata a nessuna relazione.
 Si nota quindi come questa generalizzazione possa essere eliminata. È preferibile infatti
 accorpare i sue attributi nelle entità figlie. In questo modo si riduce il numero di attributi NULL rispetto all'operazione inversa,
 ovvero accorpare gli attributi delle entità figlie in una sola entità padre.\newline
@@ -417,7 +414,7 @@ L'asterisco indica gli attrributi che possono essere NULL.
 \begin{itemize}
     \item \textbf{Serie}(\underline{Titolo, AnnoInizio}, Genere, Descrizione, Regista, PiattaformaStreaming, Opening)
     \begin{itemize}
-        \item Serie.Regista=Regista.ID
+        \item Serie.Regista=Regista.CodiceFiscale
         \item Serie.PiattaformaStreaming=PiattaformaStreaming.Nome
     \end{itemize}
     \item \textbf{Stagione}(\underline{TitoloSerie, AnnoSerie, NumeroStagione}, Anno)
@@ -441,8 +438,8 @@ L'asterisco indica gli attrributi che possono essere NULL.
         \item Visualizzazione.NumeroEpisodio=Episodio.Numero
     \end{itemize}
     \item \textbf{Utente}(\underline{Username}, Nome, DataNascita, Email)
-    \item \textbf{Attore}(\underline{ID}, Nome, DataNascita, Nazionalita, NumeroSerie)
-    \item \textbf{Regista}(\underline{ID}, Nome, DataNascita, Nazionalita, GenereSerie)
+    \item \textbf{Attore}(\underline{CodiceFiscale}, Nome, DataNascita, Nazionalita, NumeroSerie)
+    \item \textbf{Regista}(\underline{CodiceFiscale}, Nome, DataNascita, Nazionalita, GenereSerie)
     \item \textbf{PiattaformaStreaming}(\underline{Nome}, CostoMensile)
     \item \textbf{Sottoscrizione}(\underline{Username, Piattaforma}, DataInizio, DataFine*, TipoAbbonamento)
     \begin{itemize}
