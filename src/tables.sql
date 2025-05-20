@@ -19,7 +19,8 @@ CREATE TABLE PIATTAFORMA_STREAMING(
 );
 
 CREATE TABLE UTENTE(
-    username VARCHAR (100) PRIMARY KEY,
+    cod_fiscale INT PRIMARY KEY,
+    username VARCHAR (100),
     nome VARCHAR (100) NOT NULL,
     data_nascita DATE NOT NULL,
     email VARCHAR (100) NOT NULL
@@ -54,8 +55,8 @@ CREATE TABLE SERIE_TV (
 	piattaforma_streaming VARCHAR (100) NOT NULL,
 	PRIMARY KEY (titolo, anno_inizio),
 	FOREIGN KEY (regista) REFERENCES REGISTA(cod_fiscale) ON DELETE RESTRICT ON UPDATE CASCADE,
-	FOREIGN KEY (piattaforma_streaming) REFERENCES PIATTAFORMA_STREAMING(nome) ON DELETE RESTRICT ON UPDATE CASCADE
-    CHECK (anno_inizio > 1900),
+	FOREIGN KEY (piattaforma_streaming) REFERENCES PIATTAFORMA_STREAMING(nome) ON DELETE RESTRICT ON UPDATE CASCADE,
+    CHECK (anno_inizio > 1900)
 );
 
 CREATE TABLE STAGIONE(
@@ -64,7 +65,7 @@ CREATE TABLE STAGIONE(
 	numero_stagione int,
 	anno int NOT NULL,
 	PRIMARY KEY (titolo_serie, anno_serie, numero_stagione),
-	FOREIGN KEY (titolo_serie, anno_serie) REFERENCES SERIE_TV (titolo, anno_inizio) ON DELETE CASCADE ON UPDATE CASCADE
+	FOREIGN KEY (titolo_serie, anno_serie) REFERENCES SERIE_TV (titolo, anno_inizio) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (anno > 1900),
     CHECK (numero_stagione > 0),
     CHECK (
@@ -80,14 +81,11 @@ CREATE TABLE EPISODIO(
     numero_stagione INT,
     numero_episodio INT,
     titolo_episodio VARCHAR (100) NOT NULL,
-    anno INT NOT NULL,
     durata INT NOT NULL,
-    numero_utenti INT NOT NULL,
     PRIMARY KEY (titolo_serie, anno_serie, numero_stagione, numero_episodio),
     FOREIGN KEY (titolo_serie,anno_serie,numero_stagione) REFERENCES STAGIONE (titolo_serie, anno_serie, numero_stagione) ON DELETE CASCADE ON UPDATE CASCADE,
-    CHECK (anno > 1900),
     CHECK (numero_episodio > 0),
-    CHECK (durata > 0),
+    CHECK (durata > 0)
 );
 
 CREATE TABLE OPENING(
@@ -97,7 +95,7 @@ CREATE TABLE OPENING(
     compositore VARCHAR (100) NOT NULL,
     durata INT NOT NULL,
     FOREIGN KEY (titolo_serie, anno_serie) REFERENCES SERIE_TV (titolo, anno_inizio) ON DELETE CASCADE ON UPDATE CASCADE,
-    CHECK (durata > 0),
+    CHECK (durata > 0)
 );
 
 CREATE TABLE VISUALIZZAZIONE(
@@ -111,7 +109,7 @@ CREATE TABLE VISUALIZZAZIONE(
 	PRIMARY KEY (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data),
     FOREIGN KEY (username) REFERENCES UTENTE (username) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (titolo_serie, anno_serie, numero_stagione, numero_episodio) REFERENCES EPISODIO (titolo_serie, anno_serie, numero_stagione, numero_episodio) ON DELETE CASCADE ON UPDATE CASCADE,
-    CHECK (voto >= 0 AND voto <= 10),
+    CHECK (voto >= 0 AND voto <= 10)
 );
 
 CREATE TABLE PERFORMANCE (
@@ -123,7 +121,7 @@ CREATE TABLE PERFORMANCE (
     PRIMARY KEY (id_attore, titolo_serie, anno_serie),
     FOREIGN KEY (id_attore) REFERENCES ATTORE(cod_fiscale) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (titolo_serie, anno_serie) REFERENCES SERIE_TV(titolo, anno_inizio) ON DELETE CASCADE ON UPDATE CASCADE,
-    CHECK (compenso > 0),
+    CHECK (compenso > 0)
 );
 
 
@@ -136,18 +134,20 @@ CREATE TABLE SOTTOSCRIZIONE(
     tipo_abbonamento VARCHAR (100) NOT NULL,
     PRIMARY KEY (username, nome_piattaforma),
     FOREIGN KEY (username) REFERENCES UTENTE(username) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (nome_piattaforma) REFERENCES PIATTAFORMA_STREAMING(nome) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (nome_piattaforma) REFERENCES PIATTAFORMA_STREAMING(nome) ON DELETE CASCADE ON UPDATE CASCADE
     --Decidere il significato di tipo_abbonamento e check di cosneguenza CHECK ()
 
 );
 
 
 
--- PIATTAFORMA_STREAMING
-INSERT INTO PIATTAFORMA_STREAMING VALUES
-('Netflix', 15.99),
-('Amazon Prime', 12.99),
-('Disney+', 9.99);
+-- PIATTAFORME STREAMING
+INSERT INTO PIATTAFORMA_STREAMING (nome, costo_mensile) VALUES
+('Netflix', 12.99),
+('Amazon Prime', 8.99),
+('Disney+', 7.99),
+('HBO Max', 14.99),
+('Apple TV+', 6.99);
 
 -- UTENTE
 INSERT INTO UTENTE VALUES
@@ -167,8 +167,8 @@ INSERT INTO REGISTA VALUES
 
 -- SERIE_TV
 INSERT INTO SERIE_TV VALUES
-('La Grande Avventura', 2015, 'Avventura', 'Serie drammatica ambientata in montagna.', 1, 'Netflix', 'Tema Principale'),
-('Amori e Destini', 2018, 'Romantico', 'Storie di amori complicati.', 2, 'Amazon Prime', 'Love Song');
+('La Grande Avventura', 2015, 'Avventura', 'Serie drammatica ambientata in montagna.', 1, 'Netflix'),
+('Amori e Destini', 2018, 'Romantico', 'Storie di amori complicati.', 2, 'Amazon Prime');
 
 -- STAGIONE
 INSERT INTO STAGIONE VALUES
