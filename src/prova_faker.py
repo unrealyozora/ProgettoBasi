@@ -8,9 +8,12 @@ NUM_UTENTI = 1000
 NUM_SERIE = 200
 NUM_REGISTI = 50
 NUM_ATTORI = 100
+NUM_SOTTOSCRIZIONI = 2000
 GENERI = ["Azione", "Avventura", "Commedia", "Drammatico", "Fantascienza", "Fantasy", "Horror", "Romantico", "Thriller", "Western", "Giallo"]
 PIATTAFORME_STREAMING = ['Netflix', 'Amazon Prime', 'Disney+', 'HBO Max', 'Apple TV+']
 RUOLI_ATTORE = ["Protagonista", "Secondario", "Guest Star"]
+TIPO_ABBONAMENTO = ["Premium", "Standard", "Basic"]
+
 
 episodi=[]
 lista_registi = []
@@ -19,7 +22,13 @@ serie={} #dizionari per memorizzare le serie e l'anno di inizio
 lista_utenti = []
 with open('src/populate.sql', "w", encoding="utf-8") as f:
    
-     
+   #PIATTAFORME STREAMING
+   for i in range(len(PIATTAFORME_STREAMING)):
+     piattaforma = PIATTAFORME_STREAMING[i]
+     costo = round(random.uniform(5, 20), 2)
+     f.write(f"INSERT INTO PIATTAFORMA_STREAMING (nome, costo_mensile) VALUES ('{piattaforma}', {costo});\n")
+
+
    #UTENTI
    for i in range(NUM_UTENTI):
       id = fake.unique.random_int(min=1, max=99999)
@@ -27,7 +36,7 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
       nome = fake.name().replace("'", "''")
       nascita = fake.date_of_birth(minimum_age=18, maximum_age=80)
       email = fake.email()
-      f.write(f"INSERT INTO UTENTE (idm username, nome, email) VALUES ({id}, '{username}', '{nome}', '{nascita}', {email}');\n")
+      f.write(f"INSERT INTO UTENTE (cod_fiscale, username, nome, data_nascita, email) VALUES ({id}, '{username}', '{nome}', '{nascita}', '{email}');\n")
       lista_utenti.append(id)
 
       
@@ -39,7 +48,7 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
     nascita = fake.date_of_birth(minimum_age=18, maximum_age=80)
     nazionalita = fake.country()
     genere_serie = random.choice(GENERI)
-    f.write(f"INSERT INTO REGISTA (id, nome, nascita, nazionalita, genere_serie) VALUES ({id}, '{nome}', '{nascita}', '{nazionalita}', '{genere_serie}');\n")
+    f.write(f"INSERT INTO REGISTA (cod_fiscale, nome, data_nascita, nazionalita, genere_serie) VALUES ({id}, '{nome}', '{nascita}', '{nazionalita}', '{genere_serie}');\n")
 
    
 
@@ -48,11 +57,11 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
      titolo=fake.unique.catch_phrase().replace("'", "''")
      anno_inizio=random.randint(1980, 2024)
      serie[titolo] = anno_inizio
-     genre=random.choice(GENERI)
+     genere=random.choice(GENERI)
      descrizione=fake.text(max_nb_chars=200).replace("'", "''")
      regista=random.choice(lista_registi)
      piattaforma=random.choice(PIATTAFORME_STREAMING)
-     f.write(f"INSERT INTO SERIE_TV (titolo, anno_inizio, genere, descrizione, regista, piattaforma) VALUES ('{titolo}', {anno_inizio}, '{genre}', '{descrizione}', {regista}, '{piattaforma}');\n")
+     f.write(f"INSERT INTO SERIE_TV (titolo, anno_inizio, genere, descrizione, regista, piattaforma_streaming) VALUES ('{titolo}', {anno_inizio}, '{genere}', '{descrizione}', {regista}, '{piattaforma}');\n")
      
 
      num_stagioni=random.randint(1, 10)
@@ -68,7 +77,7 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
        for episodio in range(1, num_episodi+1):
          titolo_episodio=fake.sentence(nb_words=3).replace("'", "''")
          durata=random.randint(20, 60)
-         f.write(f"INSERT INTO EPISODIO (titolo, stagione, episodio, titolo_episodio, durata) VALUES ('{titolo}', {anno_inizio}, {numero_stagione}, {episodio}, '{titolo_episodio}', {durata});\n")
+         f.write(f"INSERT INTO EPISODIO (titolo_serie, anno_serie, numero_stagione, numero_episodio, titolo_episodio, durata) VALUES ('{titolo}', {anno_inizio}, {numero_stagione}, {episodio}, '{titolo_episodio}', {durata});\n")
          episodi.append((titolo, anno_inizio, numero_stagione, episodio))
 
 
@@ -80,6 +89,7 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
      titolo_op = fake.sentence(nb_words=3).replace("'", "''")
      compositore = fake.name().replace("'", "''")
      durata = random.randint(30, 120)
+     f.write(f"INSERT INTO OPENING (titolo, titolo_serie, anno_serie, compositore, durata) VALUES ('{titolo_op}', '{titolo_serie}', {anno_serie}, '{compositore}', {durata});\n")
 
    #ATTORI
    lista_attori = []
@@ -90,7 +100,7 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
      nazionalita = fake.country().replace("'", "''")
      numero_serie = random.randint(1, min(15, len(list(serie))))
      lista_attori.append({'id': id, 'nome': nome, 'data_nascita': data_nascita, 'nazionalita': nazionalita, 'num_serie': numero_serie})
-     f.write(f"INSERT INTO ATTORE (id, nome, data_nascita, nazionalita) VALUES ({id}, '{nome}', '{data_nascita}', '{nazionalita}', {numero_serie});\n")
+     f.write(f"INSERT INTO ATTORE (cod_fiscale, nome, data_nascita, nazionalita, numero_serie) VALUES ({id}, '{nome}', '{data_nascita}', '{nazionalita}', {numero_serie});\n")
 
 
    #VISUALIZZAZIONI
@@ -106,7 +116,7 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
      visualizzazioni.add(key)
      voto_str=str(voto) if voto is not None else "NULL"
      f.write(
-            f"INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) "
+            f"INSERT INTO VISUALIZZAZIONE (cod_fiscale, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) "
             f"VALUES ('{user}', '{titolo}', {anno}, {stagione}, {episodio}, '{data_visione}', {voto_str});\n"
         )
     
@@ -130,6 +140,31 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
                 f"VALUES ({id_attore}, '{titolo}', {anno}, '{ruolo}', {compenso});\n"
             )
        performance.add((id_attore, titolo, anno))
+
+   #ABBONAMENTI
+   sottoscrizioni=set()
+   for i in range(NUM_SOTTOSCRIZIONI):
+     utente=random.choice(lista_utenti)
+     piattaforma=random.choice(PIATTAFORME_STREAMING)
+
+     if (utente, piattaforma) in sottoscrizioni:
+       continue
+     sottoscrizioni.add((utente, piattaforma))
+
+     data_inizio = fake.date_between(start_date=date(2020,1,1), end_date=date(2024,12,31))
+     if random.random() < 0.7:
+       data_fine = fake.date_between(start_date=data_inizio, end_date=date(2025,12,31))
+       tipo_abbonamento=random.choice(TIPO_ABBONAMENTO)
+       f.write(f"INSERT INTO SOTTOSCRIZIONE (cod_fiscale, nome_piattaforma, data_inizio, data_fine, tipo_abbonamento) VALUES ('{utente}', '{piattaforma}', '{data_inizio}', '{data_fine}', '{tipo_abbonamento}');\n")
+     else:
+       data_fine = "NULL"
+       tipo_abbonamento=random.choice(TIPO_ABBONAMENTO)
+       f.write(f"INSERT INTO SOTTOSCRIZIONE (cod_fiscale, nome_piattaforma, data_inizio, data_fine, tipo_abbonamento) VALUES ('{utente}', '{piattaforma}', '{data_inizio}', {data_fine}, '{tipo_abbonamento}');\n")
+     
+   
+
+   
+
 
    
 

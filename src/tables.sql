@@ -99,15 +99,15 @@ CREATE TABLE OPENING(
 );
 
 CREATE TABLE VISUALIZZAZIONE(
-    username VARCHAR (100) NOT NULL,
+    cod_fiscale INT NOT NULL,
     titolo_serie VARCHAR (100) NOT NULL,
     anno_serie INT NOT NULL,
     numero_stagione INT NOT NULL,
     numero_episodio INT NOT NULL,
     data DATE NOT NULL,
     voto INT,
-	PRIMARY KEY (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data),
-    FOREIGN KEY (username) REFERENCES UTENTE (username) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (cod_fiscale, titolo_serie, anno_serie, numero_stagione, numero_episodio, data),
+    FOREIGN KEY (cod_fiscale) REFERENCES UTENTE (cod_fiscale) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (titolo_serie, anno_serie, numero_stagione, numero_episodio) REFERENCES EPISODIO (titolo_serie, anno_serie, numero_stagione, numero_episodio) ON DELETE CASCADE ON UPDATE CASCADE,
     CHECK (voto >= 0 AND voto <= 10)
 );
@@ -127,13 +127,13 @@ CREATE TABLE PERFORMANCE (
 
 
 CREATE TABLE SOTTOSCRIZIONE(
-    username VARCHAR (100),
+    cod_fiscale INT
     nome_piattaforma VARCHAR (100),
     data_inizio DATE NOT NULL,
     data_fine DATE,
     tipo_abbonamento VARCHAR (100) NOT NULL,
-    PRIMARY KEY (username, nome_piattaforma),
-    FOREIGN KEY (username) REFERENCES UTENTE(username) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (cod_fiscale, nome_piattaforma),
+    FOREIGN KEY (cod_fiscale) REFERENCES UTENTE(cod_fiscale) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (nome_piattaforma) REFERENCES PIATTAFORMA_STREAMING(nome) ON DELETE CASCADE ON UPDATE CASCADE
     --Decidere il significato di tipo_abbonamento e check di cosneguenza CHECK ()
 
