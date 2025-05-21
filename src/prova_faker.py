@@ -117,7 +117,7 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
      visualizzazioni.add(key)
      voto_str=str(voto) if voto is not None else "NULL"
      f.write(
-            f"INSERT INTO VISUALIZZAZIONE (cod_fiscale, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) "
+            f"INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) "
             f"VALUES ('{user}', '{titolo}', {anno}, {stagione}, {episodio}, '{data_visione}', {voto_str});\n"
         )
     
