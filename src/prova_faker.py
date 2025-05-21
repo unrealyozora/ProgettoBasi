@@ -33,12 +33,11 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
 
    #UTENTI
    for i in range(NUM_UTENTI):
-      id = fake.unique.random_int(min=1, max=99999)
       username = fake.user_name()
       nome = fake.name().replace("'", "''")
       nascita = fake.date_of_birth(minimum_age=18, maximum_age=80)
       email = fake.email()
-      f.write(f"INSERT INTO UTENTE (cod_fiscale, username, nome, data_nascita, email) VALUES ({id}, '{username}', '{nome}', '{nascita}', '{email}');\n")
+      f.write(f"INSERT INTO UTENTE (username, nome, data_nascita, email) VALUES ('{username}', '{nome}', '{nascita}', '{email}');\n")
       lista_utenti.append(id)
 
       

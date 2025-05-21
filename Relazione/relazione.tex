@@ -15,6 +15,29 @@
 \usepackage{hyperref}
 \usepackage{array}
 \usepackage{listings}
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstdefinelanguage{SQL}{
+    morekeywords={SELECT, FROM, WHERE, AND, OR, INSERT, INTO, VALUES, UPDATE, SET, DELETE, CREATE, TABLE, ALTER, DROP, JOIN, ON, AS, IN, IS, NOT, NULL, LIKE, DISTINCT, ORDER, BY, GROUP, HAVING, LIMIT},
+    sensitive=false,
+    morecomment=[l]--,
+    morestring=[b]',
+}
+
+\lstset{
+    language=SQL,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{violet}\bfseries,
+    commentstyle=\color{gray},
+    stringstyle=\color{orange},
+    backgroundcolor=\color{white},
+    showstringspaces=false,
+    breaklines=true,
+    captionpos=b
+}
+
 \graphicspath{ {./images/} }
 \pagestyle{plain}
 \onehalfspacing % Interlinea 1.5
@@ -406,6 +429,7 @@ tre attributi \textit{Nome}, \textit{Data di nascita} e \textit{Identificatore},
 Si nota quindi come questa generalizzazione possa essere eliminata. È preferibile infatti
 accorpare i sue attributi nelle entità figlie. In questo modo si riduce il numero di attributi NULL rispetto all'operazione inversa,
 ovvero accorpare gli attributi delle entità figlie in una sola entità padre.\newline
+Inoltre, e' possibile eliminare l' attributo "codice\_fiscale" nell' entità "UTENTE" in quanto possiamo utilizzare l' attributo "username" come chiave primaria. Inoltre conoscere il codice fiscale di un utente puo' essere considerato sostanzialmente insensato e rischioso per la sicurezza.\newline
 \textbf{In figura \ref{fig:ristrutt}} è riportato il diagramma E-R ristrutturato, in cui sono state effettuate le modifiche discusse precedentemente.
 
 \subsection{Schema relazionale}
@@ -471,6 +495,14 @@ viene motivato l’utilizzo dell’indice proposto.
 \begin{center}
 \includegraphics[width=0.9\textwidth]{Query1.jpg}
 \end{center}
+
+
+\begin{lstlisting}[caption={Esempio di query SQL}, label={lst:sql-example}]
+SELECT name, genre
+FROM tv_series
+WHERE rating > 8.5
+ORDER BY rating DESC;
+\end{lstlisting}
 
 \vspace{1cm}
 

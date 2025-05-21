@@ -19,8 +19,7 @@ CREATE TABLE PIATTAFORMA_STREAMING(
 );
 
 CREATE TABLE UTENTE(
-    cod_fiscale INT PRIMARY KEY,
-    username VARCHAR (100),
+    username VARCHAR (100) PRIMARY KEY,
     nome VARCHAR (100) NOT NULL,
     data_nascita DATE NOT NULL,
     email VARCHAR (100) NOT NULL
