@@ -14545,7 +14545,7 @@ INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione
 INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) VALUES ('zbrunelleschi', 'Matrice avanzata full-range', 2011, 3, 9, '2017-02-27', 1);
 INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) VALUES ('carrie85', 'Total executive migration', 1981, 2, 10, '1985-02-18', 1);
 INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) VALUES ('carolina69', 'Interfaccia decentralizzata object-oriented', 1994, 8, 17, '2010-08-05', 6);
-INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) VALUES ('luciocapecchi', 'Help-desk multi-laterale globale', 2020, 1, 3, '2021-07-18', 9);
+INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) VALUES ('luciocapecchi', 'Help-desk multi-laterale globale', 2020, 5, 9, '2021-07-18', 2);
 INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) VALUES ('calboachille', 'Organic modular methodology', 2014, 5, 13, '2017-07-17', 8);
 INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) VALUES ('terrellvanessa', 'Distributed transitional neural-net', 2011, 4, 2, '2013-06-13', 7);
 INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) VALUES ('ryan27', 'Moderazione totale sistemica', 2000, 5, 2, '2000-01-29', 8);
@@ -14649,7 +14649,7 @@ INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione
 INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) VALUES ('etassoni', 'Right-sized client-server complexity', 1981, 7, 5, '2013-08-21', 7);
 INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) VALUES ('scaleramariana', 'Prodotto sincronizzata 24/7', 2001, 10, 8, '2018-06-06', 6);
 INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) VALUES ('qalboni', 'Monitored demand-driven Graphical User Interface', 2000, 3, 4, '2022-05-26', 3);
-INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) VALUES ('stonerussell', 'Help-desk multi-laterale globale', 2020, 4, 4, '2024-08-03', 6);
+INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) VALUES ('stonerussell', 'Help-desk multi-laterale globale', 2020, 5, 9, '2024-08-03', 7);
 INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) VALUES ('etomasetti', 'Conoscenza base automatizzata background', 2010, 10, 6, '2024-03-28', NULL);
 INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) VALUES ('torquatotaccola', 'Modello condivisibile mission-critical', 1989, 5, 8, '1992-02-05', 10);
 INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) VALUES ('brianschmidt', 'Cross-platform systemic implementation', 1980, 1, 1, '1986-04-19', 2);

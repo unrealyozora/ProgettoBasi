@@ -498,9 +498,14 @@ viene motivato l’utilizzo dell’indice proposto.
 
 
 \begin{lstlisting}[caption={Esempio di query SQL}, label={lst:sql-example}]
-SELECT Titolo
-FROM Serie
-WHERE PiattaformaPetrolifera = 'Burger King'
+SELECT stv.titolo, COUNT(*) as numero_stagioni, op.titolo
+FROM serie_tv stv
+JOIN stagione st
+ON st.titolo_serie=stv.titolo AND st.anno_serie=stv.anno_inizio
+JOIN opening op
+ON op. titolo_serie=stv.titolo AND op.anno_serie=stv.anno_inizio
+WHERE piattaforma_streaming= 'Netflix'
+GROUP BY stv.titolo, op.titolo
 \end{lstlisting}
 
 \vspace{1cm}
@@ -513,10 +518,23 @@ WHERE PiattaformaPetrolifera = 'Burger King'
 \includegraphics[width=0.9\textwidth]{Query2.jpg}
 \end{center}
 
+\begin{lstlisting}[caption={Esempio di query SQL}, label={lst:sql-example}]
+SELECT E.TITOLO_episodio, AVG(V.Voto) as MediaVoto
+FROM Episodio E
+JOIN VISUALIZZAZIONE V ON
+	E.Titolo_Serie = V.Titolo_Serie AND
+	E.Anno_Serie = V.Anno_Serie AND
+	E.Numero_Stagione = V.Numero_Stagione AND
+	E.Numero_Episodio = V.Numero_Episodio
+WHERE E.Titolo_Serie = 'Help-desk multi-laterale globale'
+GROUP BY E.Titolo_episodio
+HAVING AVG(V.Voto)>7.5
+\end{lstlisting}
+
 \vspace{1cm}
 
 \subsubsection*{Query 3}
-\textbf{Obiettivo:} Elencare gli utenti che hanno guardato almeno 5 episodi in totale.
+\textbf{Obiettivo:} Numero di visualizzazioni totali per piattaforma
 
 \vspace{0.5cm}
 \begin{center}

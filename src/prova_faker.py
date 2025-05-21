@@ -106,7 +106,7 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
 
    #VISUALIZZAZIONI
    visualizzazioni = set()
-   for i in range(1000):
+   for i in range(10000):
      user=random.choice(lista_utenti)
      titolo, anno, stagione, episodio = random.choice(episodi)
      data_visione = fake.date_between(start_date=date(anno,1,1), end_date=date(2024,12,31))
