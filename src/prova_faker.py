@@ -4,6 +4,8 @@ from datetime import date
 
 
 fake = Faker(["it_IT", "en_US"])
+fake.add_provider(SeriesProvider)
+print(fake.serie())
 NUM_UTENTI = 1000
 NUM_SERIE = 200
 NUM_REGISTI = 50
