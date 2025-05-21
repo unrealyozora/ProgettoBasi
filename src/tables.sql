@@ -42,7 +42,8 @@ CREATE TABLE REGISTA(
     data_nascita DATE NOT NULL,
     nazionalita VARCHAR (100) NOT NULL,
     genere_serie varchar (100) NOT NULL
-    CHECK (cod_fiscale > 0)
+    CHECK (cod_fiscale > 0),
+    CHECK (genere_serie IN ('Azione', 'Avventura', 'Commedia', 'Drammatico', 'Fantascienza', 'Fantasy', 'Horror', 'Romantico', 'Thriller', 'Western', 'Giallo'))
 
 );
 
@@ -56,7 +57,7 @@ CREATE TABLE SERIE_TV (
 	PRIMARY KEY (titolo, anno_inizio),
 	FOREIGN KEY (regista) REFERENCES REGISTA(cod_fiscale) ON DELETE RESTRICT ON UPDATE CASCADE,
 	FOREIGN KEY (piattaforma_streaming) REFERENCES PIATTAFORMA_STREAMING(nome) ON DELETE RESTRICT ON UPDATE CASCADE,
-    CHECK (anno_inizio > 1900)
+    CHECK (anno_inizio > 1900 AND genere IN ('Azione', 'Avventura', 'Commedia', 'Drammatico', 'Fantascienza', 'Fantasy', 'Horror', 'Romantico', 'Thriller', 'Western', 'Giallo'))
 );
 
 CREATE TABLE STAGIONE(
@@ -138,68 +139,3 @@ CREATE TABLE SOTTOSCRIZIONE(
     --Decidere il significato di tipo_abbonamento e check di cosneguenza CHECK ()
 
 );
-
-
-
--- PIATTAFORME STREAMING
-INSERT INTO PIATTAFORMA_STREAMING (nome, costo_mensile) VALUES
-('Netflix', 12.99),
-('Amazon Prime', 8.99),
-('Disney+', 7.99),
-('HBO Max', 14.99),
-('Apple TV+', 6.99);
-
--- UTENTE
-INSERT INTO UTENTE VALUES
-('mario_rossi', 'Mario Rossi', '1985-03-15', 'mario.rossi@example.com'),
-('anna_bianchi', 'Anna Bianchi', '1990-07-22', 'anna.bianchi@example.com'),
-('luigi_verdi', 'Luigi Verdi', '1978-11-30', 'luigi.verdi@example.com');
-
--- ATTORE
-INSERT INTO ATTORE VALUES
-(1, 'Giovanni Esposito', '1970-05-05', 'Italia', 3),
-(2, 'Laura Neri', '1982-12-11', 'Italia', 2);
-
--- REGISTA
-INSERT INTO REGISTA VALUES
-(1, 'Federico Fellini', '1920-01-20', 'Italia', 'Drammatico'),
-(2, 'Sofia Coppola', '1971-05-14', 'USA', 'Commedia');
-
--- SERIE_TV
-INSERT INTO SERIE_TV VALUES
-('La Grande Avventura', 2015, 'Avventura', 'Serie drammatica ambientata in montagna.', 1, 'Netflix'),
-('Amori e Destini', 2018, 'Romantico', 'Storie di amori complicati.', 2, 'Amazon Prime');
-
--- STAGIONE
-INSERT INTO STAGIONE VALUES
-('La Grande Avventura', 2015, 1, 2015),
-('La Grande Avventura', 2015, 2, 2016),
-('Amori e Destini', 2018, 1, 2018);
-
--- EPISODIO
-INSERT INTO EPISODIO VALUES
-('La Grande Avventura', 2015, 1, 1, 'Inizio del viaggio', 2015, 45, 100),
-('La Grande Avventura', 2015, 1, 2, 'La scoperta', 2015, 47, 95),
-('Amori e Destini', 2018, 1, 1, 'Primo incontro', 2018, 50, 80);
-
--- OPENING
-INSERT INTO OPENING VALUES
-('Tema Principale', 'La Grande Avventura', 2015, 'Ennio Morricone', 120),
-('Love Song', 'Amori e Destini', 2018, 'John Williams', 110);
-
--- VISUALIZZAZIONE
-INSERT INTO VISUALIZZAZIONE VALUES
-('mario_rossi', 'La Grande Avventura', 2015, 1, 1, '2023-05-01', 8),
-('anna_bianchi', 'Amori e Destini', 2018, 1, 1, '2023-05-03', 9),
-('luigi_verdi', 'La Grande Avventura', 2015, 1, 2, '2023-05-02', 7);
-
--- PERFORMANCE
-INSERT INTO PERFORMANCE VALUES
-(1, 'La Grande Avventura', 2015, 'Protagonista', 5000),
-(2, 'Amori e Destini', 2018, 'Supporto', 3000);
-
--- SOTTOSCRIZIONE
-INSERT INTO SOTTOSCRIZIONE VALUES
-('mario_rossi', 'Netflix', '2023-01-01', '2023-12-31', 'Premium'),
-('anna_bianchi', 'Amazon Prime', '2023-03-01', NULL, 'Standard'),
-('luigi_verdi', 'Netflix', '2023-02-01', NULL, 'Standard');
