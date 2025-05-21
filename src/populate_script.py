@@ -67,7 +67,7 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
       
     #REGISTI
    for i in range(NUM_REGISTI):
-    id = fake.unique.random_int(min=1,max=99999)
+    id = fake.unique.random_int(min=1_000_000, max=9_999_999)
     lista_registi.append(id)
     nome = fake.name().replace("'", "''")
     nascita = fake.date_of_birth(minimum_age=18, maximum_age=80)
