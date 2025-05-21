@@ -1,4 +1,4 @@
-\documentclass[12pt,a4paper]{article}
+\documentclass[10pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
 \usepackage[T1]{fontenc}
@@ -14,8 +14,6 @@
 \usepackage{float}
 \usepackage{hyperref}
 \usepackage{array}
-\usepackage{listings}
-
 \usepackage{listings}
 \usepackage{xcolor}
 
@@ -541,6 +539,44 @@ HAVING AVG(V.Voto)>7.5
 \includegraphics[width=0.9\textwidth]{Query3.png}
 \end{center}
 
+
+\begin{lstlisting}[caption={Esempio di query SQL}, label={lst:sql-example}]
+--DA CONTROLLARE--
+SELECT 
+    ps.nome AS piattaforma,
+    COALESCE(vstats.totale_visualizzazioni, 0) AS totale_visualizzazioni,
+    COALESCE(sstats.utenti_iscritti, 0) AS utenti_iscritti
+FROM 
+    PIATTAFORMA_STREAMING ps
+
+-- subquery per visualizzazioni per piattaforma
+LEFT JOIN (
+    SELECT 
+        st.piattaforma_streaming AS piattaforma,
+        COUNT(*) AS totale_visualizzazioni
+    FROM 
+        VISUALIZZAZIONE v
+    JOIN 
+        SERIE_TV st ON v.titolo_serie = st.titolo AND v.anno_serie = st.anno_inizio
+    GROUP BY 
+        st.piattaforma_streaming
+) AS vstats ON ps.nome = vstats.piattaforma
+
+-- subquery per numero utenti iscritti per piattaforma
+LEFT JOIN (
+    SELECT 
+        nome_piattaforma AS piattaforma,
+        COUNT(DISTINCT username) AS utenti_iscritti
+    FROM 
+        SOTTOSCRIZIONE
+    GROUP BY 
+        nome_piattaforma
+) AS sstats ON ps.nome = sstats.piattaforma
+
+ORDER BY 
+    totale_visualizzazioni DESC;
+
+\end{lstlisting}
 \vspace{1cm}
 
 \subsubsection*{Query 4}
