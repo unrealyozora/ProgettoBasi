@@ -33,12 +33,12 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
 
    #UTENTI
    for i in range(NUM_UTENTI):
-      username = fake.user_name()
+      username = fake.unique.user_name()
       nome = fake.name().replace("'", "''")
       nascita = fake.date_of_birth(minimum_age=18, maximum_age=80)
       email = fake.email()
       f.write(f"INSERT INTO UTENTE (username, nome, data_nascita, email) VALUES ('{username}', '{nome}', '{nascita}', '{email}');\n")
-      lista_utenti.append(id)
+      lista_utenti.append(username)
 
       
     #REGISTI
@@ -156,11 +156,11 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
      if random.random() < 0.7:
        data_fine = fake.date_between(start_date=data_inizio, end_date=date(2025,12,31))
        tipo_abbonamento=random.choice(TIPO_ABBONAMENTO)
-       f.write(f"INSERT INTO SOTTOSCRIZIONE (cod_fiscale, nome_piattaforma, data_inizio, data_fine, tipo_abbonamento) VALUES ('{utente}', '{piattaforma}', '{data_inizio}', '{data_fine}', '{tipo_abbonamento}');\n")
+       f.write(f"INSERT INTO SOTTOSCRIZIONE (username, nome_piattaforma, data_inizio, data_fine, tipo_abbonamento) VALUES ('{utente}', '{piattaforma}', '{data_inizio}', '{data_fine}', '{tipo_abbonamento}');\n")
      else:
        data_fine = "NULL"
        tipo_abbonamento=random.choice(TIPO_ABBONAMENTO)
-       f.write(f"INSERT INTO SOTTOSCRIZIONE (cod_fiscale, nome_piattaforma, data_inizio, data_fine, tipo_abbonamento) VALUES ('{utente}', '{piattaforma}', '{data_inizio}', {data_fine}, '{tipo_abbonamento}');\n")
+       f.write(f"INSERT INTO SOTTOSCRIZIONE (username, nome_piattaforma, data_inizio, data_fine, tipo_abbonamento) VALUES ('{utente}', '{piattaforma}', '{data_inizio}', {data_fine}, '{tipo_abbonamento}');\n")
      
    
 
