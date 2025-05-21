@@ -99,7 +99,7 @@ CREATE TABLE OPENING(
 );
 
 CREATE TABLE VISUALIZZAZIONE(
-    cod_fiscale INT NOT NULL,
+    username VARCHAR (100),
     titolo_serie VARCHAR (100) NOT NULL,
     anno_serie INT NOT NULL,
     numero_stagione INT NOT NULL,
