@@ -39,6 +39,7 @@ GENERI = ["Azione", "Avventura", "Commedia", "Drammatico", "Fantascienza", "Fant
 PIATTAFORME_STREAMING = ['Netflix', 'Amazon Prime', 'Disney+', 'HBO Max', 'Apple TV+']
 RUOLI_ATTORE = ["Protagonista", "Secondario", "Guest Star"]
 TIPO_ABBONAMENTO = ["Premium", "Standard", "Basic"]
+NAZIONALITA=["Italy", "USA", "UK", "France", "Germany"]
 
 
 episodi=[]
@@ -71,7 +72,7 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
     lista_registi.append(id)
     nome = fake.name().replace("'", "''")
     nascita = fake.date_of_birth(minimum_age=18, maximum_age=80)
-    nazionalita = fake.country().replace("'", "''")
+    nazionalita = random.choice(NAZIONALITA).replace("'", "''")
     genere_serie = random.choice(GENERI)
     f.write(f"INSERT INTO REGISTA (cod_fiscale, nome, data_nascita, nazionalita, genere_serie) VALUES ({id}, '{nome}', '{nascita}', '{nazionalita}', '{genere_serie}');\n")
 
@@ -112,7 +113,7 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
    #OPENING
    random_serie = random.sample(list(serie.items()), k=150)
    for titolo, anno in random_serie:
-     titolo_serie = titolo.replace("'", "''")
+     titolo_serie = titolo
      anno_serie = anno
      titolo_op = fake.sentence(nb_words=3).replace("'", "''")
      compositore = fake.name().replace("'", "''")
@@ -125,18 +126,19 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
      id = fake.unique.random_int(min=1_000_000, max=9_999_999)
      nome = fake.name().replace("'", "''")
      data_nascita = fake.date_of_birth(minimum_age=18, maximum_age=80)
-     nazionalita = fake.country().replace("'", "''")
+     nazionalita = random.choice(NAZIONALITA).replace("'", "''")
      numero_serie = random.randint(1, min(15, len(list(serie))))
      lista_attori.append({'id': id, 'nome': nome, 'data_nascita': data_nascita, 'nazionalita': nazionalita, 'num_serie': numero_serie})
      f.write(f"INSERT INTO ATTORE (cod_fiscale, nome, data_nascita, nazionalita, numero_serie) VALUES ({id}, '{nome}', '{data_nascita}', '{nazionalita}', {numero_serie});\n")
 
 
    #VISUALIZZAZIONI
+   count=0
    visualizzazioni = set()
    for i in range(NUM_VISUALIZZAZIONI):
      user=random.choice(lista_utenti)
      titolo, anno, stagione, episodio = random.choice(episodi)
-     data_visione = fake.date_between(start_date=date(anno,1,1), end_date=date(2024,12,31))
+     data_visione = fake.date_between(start_date=date(2024,12,15), end_date=date(2025,5,20))
      voto = random.choice([None] +list(range(1,11)))
      key=(user, titolo, anno, stagione, episodio, data_visione)
      if key in visualizzazioni:
@@ -147,6 +149,8 @@ with open('src/populate.sql', "w", encoding="utf-8") as f:
             f"INSERT INTO VISUALIZZAZIONE (username, titolo_serie, anno_serie, numero_stagione, numero_episodio, data, voto) "
             f"VALUES ('{user}', '{titolo}', {anno}, {stagione}, {episodio}, '{data_visione}', {voto_str});\n"
         )
+     count+=1
+   print(count)
     
    #PERFORMANCE
    performance = set()

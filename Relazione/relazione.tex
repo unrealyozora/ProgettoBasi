@@ -18,7 +18,7 @@
 \usepackage{xcolor}
 
 \lstdefinelanguage{SQL}{
-    morekeywords={SELECT, FROM, WHERE, AND, OR, INSERT, INTO, VALUES, UPDATE, SET, DELETE, CREATE, TABLE, ALTER, DROP, JOIN, ON, AS, IN, IS, NOT, NULL, LIKE, DISTINCT, ORDER, BY, GROUP, HAVING, LIMIT},
+    morekeywords={COUNT, SELECT, FROM, WHERE, AND, OR, INSERT, INTO, VALUES, UPDATE, SET, DELETE, CREATE, TABLE, ALTER, DROP, JOIN, ON, AS, IN, IS, NOT, NULL, LIKE, DISTINCT, ORDER, BY, GROUP, HAVING, LIMIT},
     sensitive=false,
     morecomment=[l]--,
     morestring=[b]',
@@ -29,7 +29,7 @@
     basicstyle=\ttfamily\small,
     keywordstyle=\color{violet}\bfseries,
     commentstyle=\color{gray},
-    stringstyle=\color{orange},
+    stringstyle=\color{red},
     backgroundcolor=\color{white},
     showstringspaces=false,
     breaklines=true,
@@ -77,7 +77,7 @@ In questa sezione riassumiamo i requisiti che caratterizzano la base di dati.\ne
   \item Descrizione
   \item Genere
 \end{itemize}
-Una Serie TV è composta da una o più stagioni, e da zero o una Opening (sigla iniziale) \newline\newline\newline\newline
+Una Serie TV è composta da una o più stagioni, e da zero o una Opening (sigla iniziale) \newline\newline
 \textbf{Stagioni.} Una stagione è identificata dal suo numero e dalla Serie Tv a cui appartiene, e contiene questi attributi:
 \begin{itemize}
     \item Numero
@@ -103,7 +103,7 @@ Una stagione è composta da uno o più episodi\newline\newline
     \item Nome
     \item Data di nascita
 \end{itemize}
-Una persona si suddivide in \textbf{Utente}, \textbf{Nome} e \textbf{Registi}\newpage
+Una persona si suddivide in \textbf{Utente}, \textbf{Nome} e \textbf{Registi}\newline\newline
 \textbf{Utenti.} Un utente, oltre agli attributi di \textit{Persona} contiene:
 \begin{itemize}
     \item Username
@@ -207,7 +207,7 @@ Il database si compone delle seguenti entità:
             \item Data\_fine: date
             \item Tpo\_abbonamento: string
         \end{itemize}
-    \end{itemize}\newpage
+    \end{itemize}
     \item Utente$\Rightarrow$(0, N)$\Rightarrow$Visiona$\Leftarrow$(0, N)$\Leftarrow$Episodio
     \begin{itemize}
         \item Un utente può vedere 0 o più episodi di stagioni differenti
@@ -217,12 +217,12 @@ Il database si compone delle seguenti entità:
             \item Data: date
             \item Voto: int
         \end{itemize}
-        Il voto è opzionale.
+        Il voto è opzionale.\newpage
     \end{itemize}
     \item Serie TV$\Rightarrow$(1, N)$\Rightarrow$Perfomance$\Leftarrow$(1, N)$\Leftarrow$Attore
     \begin{itemize}
             \item In una serie tv recitano uno o più attori
-            \item Un attore può recitare in una o più serie tv
+            \item Un attore può recitare in una o più serie tv e riceve un compenso per ogni serie.
             \item Questa relazione contiene i seguenti attributi:
             \begin{itemize}
                 \item Ruolo: string
@@ -292,6 +292,7 @@ Assumiamo i seguenti dati:
     Attore & E & 1 & S\rlap{\hspace{2.5em}$\times\,5$} \\
     \hline
     \end{tabular}
+    \end{center}
     \item Operazione 2
     \begin{center}
         \begin{tabular}{|c|c|c|c|}
@@ -301,7 +302,6 @@ Assumiamo i seguenti dati:
         Attore & E & 1 & L\rlap{\hspace{2.5em}$\times\,25$} \\
         \hline
         \end{tabular}
-    \end{center}
     \end{center}
     Assumiamo costo doppio per le operazioni in scrittura, il costo totale ottenuto è:
     $((5\times 3)\times 2) + 5 + 25=60$
@@ -487,15 +487,13 @@ viene motivato l’utilizzo dell’indice proposto.
 \vspace{1cm}
 
 \subsubsection*{Query 1}
-\textbf{Obiettivo:} Trovare tutti i titoli delle serie TV disponibili su una piattaforma specifica, ad esempio \textit{Netflix}.
+\textbf{Obiettivo:} Trovare tutti i titoli delle serie TV disponibili su una piattaforma specifica (ad esempio \textit{Netflix}), la sua opening (se presente) e il numero di stagioni di ognuna.
 
 \vspace{0.5cm}
-\begin{center}
-\includegraphics[width=0.9\textwidth]{Query1.jpg}
-\end{center}
 
 
-\begin{lstlisting}[caption={Esempio di query SQL}, label={lst:sql-example}]
+
+\begin{lstlisting}[caption={Query 1}, label={lst:sql-example}]
 SELECT stv.titolo, COUNT(*) as numero_stagioni, op.titolo
 FROM serie_tv stv
 JOIN stagione st
@@ -508,15 +506,12 @@ GROUP BY stv.titolo, op.titolo
 
 \vspace{1cm}
 
-\subsubsection*{Query 2 }
-\textbf{Obiettivo:} Calcolare la media dei voti per ogni episodio della serie \textit{Dark}.
+\subsubsection*{Query 2}
+\textbf{Obiettivo:} Calcolare la media dei voti per ogni episodio di una serie specifica, visualizzando solo gli episodi con voto maggiore di 7,5.
 
 \vspace{0.5cm}
-\begin{center}
-\includegraphics[width=0.9\textwidth]{Query2.jpg}
-\end{center}
 
-\begin{lstlisting}[caption={Esempio di query SQL}, label={lst:sql-example}]
+\begin{lstlisting}[caption={Query 2}, label={lst:sql-example}]
 SELECT E.TITOLO_episodio, AVG(V.Voto) as MediaVoto
 FROM Episodio E
 JOIN VISUALIZZAZIONE V ON
@@ -524,7 +519,7 @@ JOIN VISUALIZZAZIONE V ON
 	E.Anno_Serie = V.Anno_Serie AND
 	E.Numero_Stagione = V.Numero_Stagione AND
 	E.Numero_Episodio = V.Numero_Episodio
-WHERE E.Titolo_Serie = 'Help-desk multi-laterale globale'
+WHERE E.Titolo_Serie = 'The Bear'
 GROUP BY E.Titolo_episodio
 HAVING AVG(V.Voto)>7.5
 \end{lstlisting}
@@ -532,24 +527,20 @@ HAVING AVG(V.Voto)>7.5
 \vspace{1cm}
 
 \subsubsection*{Query 3}
-\textbf{Obiettivo:} Numero di visualizzazioni totali per piattaforma
+\textbf{Obiettivo:} Visualizzare le visualizzazioni dell'ultimo mese e il numero di utenti iscritti a ogni piattaforma.
 
 \vspace{0.5cm}
-\begin{center}
-\includegraphics[width=0.9\textwidth]{Query3.png}
-\end{center}
 
 
-\begin{lstlisting}[caption={Esempio di query SQL}, label={lst:sql-example}]
---DA CONTROLLARE--
+
+\begin{lstlisting}[caption={Query 3}, label={lst:sql-example}]
 SELECT 
     ps.nome AS piattaforma,
-    COALESCE(vstats.totale_visualizzazioni, 0) AS totale_visualizzazioni,
-    COALESCE(sstats.utenti_iscritti, 0) AS utenti_iscritti
+	vstats.totale_visualizzazioni AS totale_visualizzazioni,
+	sstats.utenti_iscritti AS utenti_iscritti
 FROM 
     PIATTAFORMA_STREAMING ps
 
--- subquery per visualizzazioni per piattaforma
 LEFT JOIN (
     SELECT 
         st.piattaforma_streaming AS piattaforma,
@@ -558,11 +549,12 @@ LEFT JOIN (
         VISUALIZZAZIONE v
     JOIN 
         SERIE_TV st ON v.titolo_serie = st.titolo AND v.anno_serie = st.anno_inizio
+    WHERE 
+        v.data BETWEEN DATE '2025-04-20' AND DATE '2025-05-20'
     GROUP BY 
         st.piattaforma_streaming
 ) AS vstats ON ps.nome = vstats.piattaforma
 
--- subquery per numero utenti iscritti per piattaforma
 LEFT JOIN (
     SELECT 
         nome_piattaforma AS piattaforma,
@@ -580,23 +572,50 @@ ORDER BY
 \vspace{1cm}
 
 \subsubsection*{Query 4}
-\textbf{Obiettivo:} Trovare gli attori che hanno recitato in almeno una serie vista dall’utente \texttt{mario\_rossi}.
+\textbf{Obiettivo:} Trovare i 10 attori con il compenso più alto, e la relativa serie TV.
 
 \vspace{0.5cm}
-\begin{center}
-\includegraphics[width=0.9\textwidth]{Query4.jpg}
-\end{center}
+
+\begin{lstlisting}[caption={Query 4}, label={lst:sql-example}]
+SELECT DISTINCT a.nome, p.compenso, stv.titolo
+FROM attore AS a
+JOIN performance AS p
+ON p.id_attore=a.cod_fiscale
+JOIN serie_tv as stv
+ON stv.titolo=p.titolo_serie and stv.anno_inizio=p.anno_serie
+ORDER BY p.compenso DESC
+LIMIT 10
+
+\end{lstlisting}
 
 \vspace{1cm}
 
 \subsubsection*{Query 5}
-\textbf{Obiettivo:} Trovare le prime 3 serie TV (per numero totale di visualizzazioni) dirette da registi italiani e disponibili su piattaforme con costo mensile superiore a 10 euro.
+\textbf{Obiettivo:} Trovare le prime 3 serie TV (per numero totale di visualizzazioni) dirette da registi italiani e disponibili su piattaforme con costo mensile minore a 13 euro.
 
 \vspace{0.5cm}
-\begin{center}
-\includegraphics[width=0.9\textwidth]{Query5.jpg}
-\end{center}
+\begin{lstlisting}[caption={Query 5}, label={lst:sql-example}]
+SELECT stv.titolo, COUNT(*) AS Visualizzazioni, r.nome, stv.piattaforma_streaming as PiattaformaStreaming
+FROM serie_tv AS stv
+JOIN Visualizzazione AS v
+ON stv.titolo=v.titolo_serie and stv.anno_inizio=v.anno_serie
+JOIN regista AS r
+ON r.cod_fiscale=stv.regista
+JOIN piattaforma_streaming AS p
+ON p.nome=stv.piattaforma_streaming
+WHERE r.nazionalita='Italy' and p.costo_mensile<13
+GROUP BY stv.titolo, r.nome, stv.piattaforma_streaming
+ORDER BY Visualizzazioni DESC
+LIMIT 3
 
-\vspace{1cm}
+
+\end{lstlisting}
+
+\subsection{Creazione degli indici}
+Vogliamo ottimizzare la query 3, che calcola il numero di visualizzazioni per ogni piattaforma streaming nell'ultimo mese e il numero di utenti iscritti a ogni piattaforma.\newline
+In questo caso abbiamo deciso di creare un indice sulla tabella \textbf{Visualizzazione} per velocizzare le operazioni di join e di filtro. Le visualizzazioni infatti sono l'elemento maggiormente presente nel nostro database (oltre 10.000 tuple), e verranno spesso filtrate per data, quindi è utile avere un indice di tipo B+ Tree che ci permette di accedere più rapidamente alle tuple che soddisfano il filtro temporale. L'indice creato è il seguente:\newline
+\begin{lstlisting}[caption={Creazione indice}, label={lst:sql-example}]
+CREATE INDEX idx_visualizzazione_data ON VISUALIZZAZIONE(data);
+\end{lstlisting}
 
 \end{document}
