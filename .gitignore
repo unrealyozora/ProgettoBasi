@@ -35,3 +35,9 @@
 # Editor swap files
 *.swp
 *.swo
+
+#Python cache files
+__pycache__/
+
+#Binary files
+*.exe
