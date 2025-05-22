@@ -617,5 +617,13 @@ In questo caso abbiamo deciso di creare un indice sulla tabella \textbf{Visualiz
 \begin{lstlisting}[caption={Creazione indice}, label={lst:sql-example}]
 CREATE INDEX idx_visualizzazione_data ON VISUALIZZAZIONE(data);
 \end{lstlisting}
-
+\section{Accesso da software}
+Il file \textbf{query\_menu.c} contiene il codice sorgente per l'accesso al database tramite riga di comando. Il programma mette a disposizione le 5 query precedentemente descritte,
+rendendole parametriche su alcuni attributi. In particolare:
+\begin{itemize}
+    \item Query 1: Permette all'utente di scegliere la piattaforma streaming della quale visualizzare le serie TV.
+    \item Query 2: Permette all'utente di scegliere la serie TV della quale visualizzare gli episodi con voto maggiore di 7,5.
+    \item Query 4: Permette all'utente di scegliere la nazionalità degli attori più pagati.
+    \item Query 5: Permette all'utente di scegliere la nazionalità dei registi e il costo massimo della piattaforma streaming.
+\end{itemize}
 \end{document}

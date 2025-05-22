@@ -1,13 +1,101 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <libpq-fe.h>
+#include <string.h>
+#include <stdbool.h>
+typedef int (*QueryFunction)(PGconn* conn);
+
+char* PIATTAFORME_STREAMING[]={
+    "Netflix", "Amazon Prime", "Disney+", "HBO Max", "Apple TV+"
+};
+
+char* NAZIONALITA[]={
+    "Italy", "USA", "UK", "France", "Germany"
+};
+int query1(PGconn* conn);
+int query2(PGconn* conn);
+int query3(PGconn* conn);
+int query4(PGconn* conn);
+int query5(PGconn* conn);
+
+
+
+
+int main(int argc, char* argv[]) {
+    //Array of function pointers to our queries
+    QueryFunction queries[] = {
+        NULL,       
+        query1,
+        query2,
+        query3,
+        query4,
+        query5
+    };
+
+    // Connect to database and handle errors
+    PGconn* conn = PQconnectdb("host=localhost dbname=progettoSerieTv user=postgres password=");
+    if (PQstatus(conn) != CONNECTION_OK) {
+        fprintf(stderr, "Connection to database failed: %s", PQerrorMessage(conn));
+        return 1;
+    }
+
+
+    printf("Connected successfully!\n");
+    if (argc > 1) {
+        int query = atoi(argv[1]);
+        if (query <1 || query > 5){
+            printf("Invalid query number. Please select a number between 1 and 5.\n");
+            PQfinish(conn);
+            return 1;
+        }
+        return queries[query](conn);
+    }
+    while (1){
+        int query=0;
+
+        printf("Available queries:\n"
+            "    1. Show all Tv Series of a specific Streaming Service, with related informations\n"
+            "    2. Show the average rating of a specific Tv Series' episodes, with average rating > 7.5\n"
+            "    3. Show the last month's views, and the total users of a every streaming platform\n"
+            "    4. Show the 10 most payed actors for a specific TV Series\n"
+            "    5. Show the first 3 TV Series (for total views number) by directors from a specific Country, available on streaming platforms with a cost less than 10 euros\n"
+            "    0. Exit\n");
+        printf("---------------------------------------------------------------\n");
+        printf("Select a query: ");
+        scanf("%d", &query);
+        if (query==0){
+            printf("Exiting...\n");
+            break;
+        }else if (query<1 || query>5){
+            printf("Invalid query number. Please select a number between 1 and 5.\n");
+            continue;
+        }
+        queries[query](conn);
+        printf("---------------------------------------------------------------\n");
+    }
+    PQfinish(conn);
+    return 0;
+}
+
 
 
 int query1(PGconn* conn){
     // Query 1: Show all Tv Series of a specific Streaming Service, with related informations
     char streaming_service[50];
     printf("Enter the name of the streaming service: ");
-    scanf("%s", streaming_service);
+    scanf("%49s", streaming_service);
+    int len = sizeof(PIATTAFORME_STREAMING)/sizeof(PIATTAFORME_STREAMING[0]);
+    bool found = false;
+    for (int i = 0; i<len; i++){
+        if (!strcmp(PIATTAFORME_STREAMING[i], streaming_service)){
+            found = true;
+            break;
+        }
+    }
+    if (!found){
+        printf("Invalid streaming service. Please select a valid one. \n");
+        return 1;
+    }
     char query[512];
     snprintf(query, sizeof(query), 
         "SELECT stv.titolo, COUNT(*) as numero_stagioni, op.titolo"
@@ -24,8 +112,10 @@ int query1(PGconn* conn){
         PQfinish(conn);
         return 1;
     }
-
     int rows = PQntuples(res);
+    if (rows==0) {
+        printf("No TV Series found for the specified streaming service.\n");
+    }
     for (int i = 0; i < rows; i++) {
         printf("Tv Series: %s, Seasons: %s, Opening: %s\n", PQgetvalue(res, i, 0), PQgetvalue(res, i, 1), PQgetvalue(res, i, 2));
     }
@@ -39,7 +129,7 @@ int query2(PGconn* conn){
     //Query 2: Show the average rating of a specific Tv Series' episodes, with average rating > 7.5
     char tv_series[100];
     printf("Enter the name of the TV Series: ");
-    scanf("%s", tv_series);
+    scanf("%99s", tv_series);
     char query[512];
     snprintf(query, sizeof(query),
         "SELECT E.TITOLO_episodio, AVG(V.Voto) as MediaVoto"
@@ -55,6 +145,12 @@ int query2(PGconn* conn){
     PGresult* res = PQexec(conn, query);
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
         fprintf(stderr, "Query failed: %s", PQerrorMessage(conn));
+        PQclear(res);
+        PQfinish(conn);
+        return 1;
+    }
+    if (PQntuples(res) == 0) {
+        printf("No episodes found with an average rating greater than 7.5 for the specified TV Series.\n");
         PQclear(res);
         PQfinish(conn);
         return 1;
@@ -102,6 +198,12 @@ int query3(PGconn* conn){
         PQfinish(conn);
         return 1;
     }
+    if (PQntuples(res) == 0) {
+        printf("No views found for the specified date range.\n");
+        PQclear(res);
+        PQfinish(conn);
+        return 1;
+    }
     int rows = PQntuples(res);
 
     printf("%-25s %-15s %-15s\n", "Streaming Platform", "Total Views", "Total Users");
@@ -120,10 +222,26 @@ int query3(PGconn* conn){
 }
 
 int query4(PGconn* conn){
-    //Query 4: Show the 10 most payed actors and the relative TV Series
+    //Query 4: Show the 10 most payed actors from a selected country, and the relative TV Series
     char country[100];
+    printf("Countries available:\n");
+    for (int i = 0; i<sizeof(NAZIONALITA)/sizeof(NAZIONALITA[0]); i++){
+        printf("%d. %s\n", i+1, NAZIONALITA[i]);
+    }
     printf("Enter the name of the Country: ");
-    scanf("%s", country);
+    scanf("%99s", country);
+    int len = sizeof(NAZIONALITA)/sizeof(NAZIONALITA[0]);
+    bool found = false;
+    for (int i = 0; i<len; i++){
+        if (!strcmp(NAZIONALITA[i], country)){
+            found = true;
+            break;
+        }
+    }
+    if (!found){
+        printf("Invalid country. Please select a valid one. \n");
+        return 1;
+    }
     char query[512];
     snprintf(query, sizeof(query),
         "SELECT DISTINCT a.nome, p.compenso, stv.titolo "
@@ -142,7 +260,7 @@ int query4(PGconn* conn){
         return 1;
     }
     int rows = PQntuples(res);
-    printf("Most payed actors from %s for the Tv Series:\n", country);
+    printf("Most payed actors for a single TV series from %s:\n", country);
     printf("%-27s %-15s %-15s\n", "Actor Name", "Salary", "Tv Series");
     printf("---------------------------------------------------------------\n");
     for (int i = 0; i < rows; i++) {
@@ -154,13 +272,29 @@ int query4(PGconn* conn){
 }
 
 int query5(PGconn* conn){
-    //Query 5: Show the first 3 TV Series (for total views number) by directors from a specific Country, available on streaming platforms with a cost less than 13 euros
+    //Query 5: Show the first 3 TV Series (for total views number) by directors from a specific Country, available on streaming platforms within a selected cost.
     char country[100];
     char cost[10];
+    printf("Countries available:\n");
+    for (int i = 0; i<sizeof(NAZIONALITA)/sizeof(NAZIONALITA[0]); i++){
+        printf("%d. %s\n", i+1, NAZIONALITA[i]);
+    }
     printf("Enter the name of the Country: ");
-    scanf("%s", country);
+    scanf("%99s", country);
+    int len = sizeof(NAZIONALITA)/sizeof(NAZIONALITA[0]);
+    bool found = false;
+    for (int i = 0; i<len; i++){
+        if (!strcmp(NAZIONALITA[i], country)){
+            found = true;
+            break;
+        }
+    }
+    if (!found){
+        printf("Invalid country. Please select a valid one. \n");
+        return 1;
+    }
     printf("Enter the maximum cost of the streaming platform: ");
-    scanf("%s", cost);
+    scanf("%9s", cost);
     char query[512];
     snprintf(query, sizeof(query),
         "SELECT stv.titolo, COUNT(*) AS Visualizzazioni, r.nome, stv.piattaforma_streaming as PiattaformaStreaming "
@@ -182,6 +316,12 @@ int query5(PGconn* conn){
         PQfinish(conn);
         return 1;
     }
+    if (PQntuples(res) == 0) {
+        printf("No TV Series found within the specified cost.\n");
+        PQclear(res);
+        PQfinish(conn);
+        return 1;
+    }
     int rows = PQntuples(res);
     printf("Top 3 TV Series from %s:\n", country);
     printf("%-35s %-15s %-20s %-15s\n", "Tv Series", "Views", "Director", "Streaming Platform");
@@ -194,39 +334,3 @@ int query5(PGconn* conn){
             PQgetvalue(res, i, 3));
     }
 }
-
-
-
-int main(){
-    PGconn* conn = PQconnectdb("host=localhost dbname=progettoSerieTv user=postgres password=");
-    if (PQstatus(conn) != CONNECTION_OK) {
-        fprintf(stderr, "Connection to database failed: %s", PQerrorMessage(conn));
-        return 1;
-    }
-    printf("Connected successfully!\n");
-    while (1){
-        int query=0;
-
-        printf("Select the desired query:\n"
-            "    1. Show all Tv Series of a specific Streaming Service, with related informations\n"
-            "    2. Show the average rating of a specific Tv Series' episodes, with average rating > 7.5\n"
-            "    3. Show the last month's views, and the total users of a every streaming platform\n"
-            "    4. Show the 10 most payed actors for a specific TV Series\n"
-            "    5. Show the first 3 TV Series (for total views number) by directors from a specific Country, available on streaming platforms with a cost less than 10 euros\n");
-        scanf("%d", &query);
-        if (query<1 || query>5){
-            printf("Invalid query number. Please select a number between 1 and 5.\n");
-            continue;
-        }else if (query==1){
-            query1(conn);
-        }else if (query==2){
-            query2(conn);
-        }else if (query==3){
-            query3(conn);
-        }else if (query==4){
-            query4(conn);
-        }else if (query==5){
-            query5(conn);
-        }
-    }
-}   
